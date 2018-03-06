@@ -14,6 +14,7 @@ void setValue(int r, int c) {
 }
 
 int main() {
+	/**test**/
 	srand(time(NULL));
 	cin >> numOfMines >> height >> width;
 
