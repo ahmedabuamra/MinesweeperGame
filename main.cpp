@@ -92,7 +92,7 @@ void getInitialValues(int &height, int &width, int &numOfMines)
 }
 
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-										int numOfMines, int height, int width)
+															int numOfMines, int height, int width)
 {
 	//A function that randomises the coordinates for the mines.
 	while (mineSetSize < numOfMines)
