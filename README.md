@@ -1,1 +1,1 @@
-# StructuredProgrammingProject
+# Minesweeper Project
