@@ -18,6 +18,7 @@ You have 3 operations, 'O','F','?'
     i- If the cell already has a flag or ?, using 'O' on it, removes either of them, and returns it to its undiscovered state.
 2- 'F' - Places a flag on the tile.
 3- '?' - Places a question mark on the tile, this is for the user only, and won't affect mines or calculations.
+
 Example:
   A B C D E F G H 
 A # # # # # # # # 
