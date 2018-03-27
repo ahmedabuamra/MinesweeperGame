@@ -8,7 +8,7 @@ CLI Minesweeper game, soon to be updated to a GUI application.
 
 - Each tile has a number on it that indicates the number of mines adjacent to it.
 
-- Try to deduce where the miens are and flag them.
+- Try to deduce where the mines are and flag them.
 
 
 ### Input: 
