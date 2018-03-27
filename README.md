@@ -11,6 +11,7 @@ How to play (CLI Version):
 
 Input: 
 Input is entered through the CLI, using the following format:
+
 -> row column operation
 You have 3 operations, 'O','F','?'
 1- 'O' - Opens the tile, and the surrouding empty tiles if it is empty.
