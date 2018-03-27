@@ -19,17 +19,15 @@ int grid[50][50];
 char visible[50][50];
 
 //Check the function definitions to see the explanation for what each function does
-void setValueForTile(int r, int c);
-void setValuesForGrid(int height, int width);
-void printVisible (int height, int width);
-void checkEmpty (int r, int c, int direction);
-void checkEmptyAdjacent (int r, int c);
-void printActual(int height, int width);
 void getInitialValues(int &height, int &width, int &numOfMines);
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-															int numOfMines, int height, int width);
+                              int numOfMines, int height, int width);
+void setValueForTile(int r, int c);
+void setValuesForGrid(int height, int width);
 void placeMines(set < pair<int, int> > &minesCoordinates);
-
+void printVisible (int height, int width);
+void printActual(int height, int width);
+void openTiles(int y, int x, int height, int width);
 
 int main()
 {
@@ -43,10 +41,10 @@ int main()
     srand(time(NULL));
 
     //Input
-	getInitialValues(height, width, numOfMines);
+    getInitialValues(height, width, numOfMines);
 
     //Randomising coordinates for mines
-	randomiseMineCoordinates(minesCoordinates, numOfMines, height, width);
+    randomiseMineCoordinates(minesCoordinates, numOfMines, height, width);
 
     //Placing the mines
     placeMines(minesCoordinates);
@@ -56,51 +54,47 @@ int main()
     setValuesForGrid(height, width);
 
     //Printing out the actual grid for testing
-	printActual(height, width);
+    printActual(height, width);
 
 
-	////////////////////////////FOR TESTING////////////////////////////
-	//THIS BLOCK IS FOR TESTING AND WILL BE PUT INTO A FUNCTION BEFORE THE FINAL RELEASE
+    ////////////////////////////FOR TESTING////////////////////////////
+    //THIS BLOCK IS FOR TESTING AND WILL BE PUT INTO A FUNCTION BEFORE THE FINAL RELEASE
 
-	int x(0),y;//Dummy variables to take input from the user
+    int x(0), y;//Dummy variables to take input from the user
 
-	//For testing only, entering x = 20 terminates the input from the user.
+    //For testing only, entering x = 20 terminates the input from the user.
 
-    while (x!=20)
+    while (x != 20)
     {
         cin >> y >> x;
         if (grid[y][x] == Mines_Flag)
             cout << "You encountered a mine!";
         else
-            visible[y][x] = (char) grid[y][x] + '0';
-
-        for (int i = 1; i < 8; i++)
-            checkEmpty(y, x, i);
-
+            openTiles(y, x, height, width);
         printVisible(height, width); //Prints the grid that is visible to the user
     }
-	////////////////////////////END OF TESTING////////////////////////////
+    ////////////////////////////END OF TESTING////////////////////////////
     return 0;
 }
 
 
 void getInitialValues(int &height, int &width, int &numOfMines)
 {
-	//A function that passes the height, width and the number of mines in the grid
-	//by reference to input them
-	cin >> height >> width >> numOfMines;
+    //A function that passes the height, width and the number of mines in the grid
+    //by reference to input them
+    cin >> height >> width >> numOfMines;
 }
 
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-															int numOfMines, int height, int width)
+                              int numOfMines, int height, int width)
 {
-	//A function that randomises the coordinates for the mines.
-	while (mineSetSize < numOfMines)
-	{
-		int y = rand() % height + 1;
-		int x = rand() % width + 1;
-		minesCoordinates.insert({y, x});
-	}
+    //A function that randomises the coordinates for the mines.
+    while (mineSetSize < numOfMines)
+    {
+        int y = rand() % height + 1;
+        int x = rand() % width + 1;
+        minesCoordinates.insert(std::make_pair(y, x));
+    }
 }
 
 void setValueForTile(int r, int c)
@@ -120,22 +114,22 @@ void setValueForTile(int r, int c)
 
 void setValuesForGrid(int height, int width)
 {
-	//A function that sets the values for the tiles on the whole grid
-	for (int row = 1; row <= height; row++)
-	{
-		for (int col = 1; col <= width; col++)
-		{
-			if (grid[row][col] != Mines_Flag)
-				setValueForTile(row, col);
-		}
-	}
+    //A function that sets the values for the tiles on the whole grid
+    for (int row = 1; row <= height; row++)
+    {
+        for (int col = 1; col <= width; col++)
+        {
+            if (grid[row][col] != Mines_Flag)
+                setValueForTile(row, col);
+        }
+    }
 }
 
 void placeMines(set < pair<int, int> > &minesCoordinates)
 {
-	//A function that places the mines
-	for (set<pair<int, int> >::iterator it = minesCoordinates.begin(); it != minesCoordinates.end(); it++)
-		grid[it->first][it->second] = Mines_Flag;
+    //A function that places the mines
+    for (set<pair<int, int> >::iterator it = minesCoordinates.begin(); it != minesCoordinates.end(); it++)
+        grid[it->first][it->second] = Mines_Flag;
 }
 
 void printVisible(int height, int width)
@@ -153,82 +147,45 @@ void printVisible(int height, int width)
 
 void printActual(int height, int width)
 {
-	//A function that prints the actual grid to the user, used for testing only
-	//It will be removed in the final release
-	for (int row = 1; row <= height; row++)
-	{
-		cout << "|";
-		for (int col = 1; col <= width; col++)
-		{
-			if (grid[row][col] == Mines_Flag)
-				cout << "+|";
-
-			else if (grid[row][col]==0)
-				cout << "_|";
-
-			else
-				cout << grid[row][col] << '|';
-		}
-		cout << endl;
-	}
-
-}
-
-void checkEmpty (int r, int c, int direction)
-{
-/*
- This function checks all of the 8 directions around the tile for tile that don't contain mines.
- Here are the direction where T is the tile:
-              8  1  2
-              7  T  3
-              6  5  4
-*/
-
-    while (c>0&&r>0)
+    //A function that prints the actual grid to the user, used for testing only
+    //It will be removed in the final release
+    for (int row = 1; row <= height; row++)
     {
-        visible[r][c] = (char) grid[r][c] + '0';
-
-			if      (direction == 1) r--;
-			else if (direction == 2) {r--; c++;}
-			else if (direction == 3) c++;
-			else if (direction == 4) {r++; c++;}
-			else if (direction == 5) r++;
-			else if (direction == 6) {r++; c--;}
-			else if (direction == 7) c--;
-			else if (direction == 8) {r--; c--;}
-
-			checkEmptyAdjacent (r, c);
-
-        if (grid[r][c] == Mines_Flag)
-            break;
-        else if (grid[r][c] !=0)
+        cout << "|";
+        for (int col = 1; col <= width; col++)
         {
-            visible[r][c] = (char) grid[r][c] + '0';
-            break;
+            if (grid[row][col] == Mines_Flag)
+                cout << "+|";
+
+            else if (grid[row][col] == 0)
+                cout << "_|";
+
+            else
+                cout << grid[row][col] << '|';
         }
+        cout << endl;
     }
+
 }
 
-void checkEmptyAdjacent (int r, int c)
+void openTiles(int y, int x, int height, int width)
 {
-	//A function supposed to to check the empty tiles adjacent to the
-	//current tile
+    //A function that checks the open tiles around the tiles that was clicked on
+    //using DFS
+    if(y > height || y == 0 || x > width || x == 0 || visible[y][x] != '#')
+        return;
 
-	for (int row = r - 1; row <= r + 1; row++)
-	{
-		for (int col = c - 1; col <= c + 1; col++)
-		{
-			if (grid[r][c] == 0)
-			{
-				if (grid[row][col] != Mines_Flag)
-				visible[row][col] = (char) grid[row][col] + '0';
-			}
-			else if (grid[r][c] > 0 && grid[r][c] < Mines_Flag)
-			{
-				if (grid[row][col] == 0)
-					visible[row][col] = '0';
-			}
+    if(grid[y][x] != 0)
+    {
+        visible[y][x] = (char)(grid[y][x] + '0');
+        return;
+    }
 
-		}
-	}
+    visible[y][x] = (char)(grid[y][x] + '0');
+
+    openTiles(y+1,x, height, width);
+    openTiles(y-1,x, height, width);
+    openTiles(y,x+1, height, width);
+    openTiles(y,x-1, height, width);
 }
+
