@@ -2,16 +2,16 @@
 CLI Minesweeper game, soon to be updated to a GUI application.
 .
 
-##How to play (CLI Version):
+## How to play (CLI Version):
 
--Your goal is to flag all the mines without clicking on any of them, and have exactly n flags on n mines.
+- Your goal is to flag all the mines without clicking on any of them, and have exactly n flags on n mines.
 
--Each tile has a number on it that indicates the number of mines adjacent to it.
+- Each tile has a number on it that indicates the number of mines adjacent to it.
 
--Try to deduce where the miens are and flag them.
+- Try to deduce where the miens are and flag them.
 
 
-###Input: 
+### Input: 
 
 Input is entered through the CLI, using the following format:
 
@@ -54,7 +54,7 @@ B A O - > Removes the flag you just placed.
 
 B A O - > Actually opens the tile B,A.
 
-###Output: 
+### Output: 
 
 There are 15 symbols in this game, '#', 'F', '%', '+', '@', '?', 0-8.
 
