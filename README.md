@@ -72,3 +72,4 @@ There are 15 symbols in this game, '#', 'F', '%', '+', '@', '?', 0-8.
 
 Numbers from 0 to 8 - > Indicate the number of mines in the 8 adjacent tiles of the tile they're on.
 
+## GUI Version Coming Soon!!
