@@ -8,7 +8,7 @@ CLI Minesweeper game, soon to be updated to a GUI application.
 
 - Each tile has a number on it that indicates the number of mines adjacent to it.
 
-- Try to deduce where the miens are and flag them.
+- Try to deduce where the mines are and flag them.
 
 
 ### Input: 
@@ -72,4 +72,4 @@ There are 15 symbols in this game, '#', 'F', '%', '+', '@', '?', 0-8.
 
 Numbers from 0 to 8 - > Indicate the number of mines in the 8 adjacent tiles of the tile they're on.
 
-## GUI Version Coming Soon!!
+## GUI Version with a special theme coming soon!!
