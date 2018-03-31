@@ -1,17 +1,31 @@
 # Minesweeper Game
 CLI Minesweeper game, soon to be updated to a GUI application.
-.
+
 
 ## How to play (CLI Version):
 
-- Your goal is to flag all the mines without clicking on any of them, and have exactly n flags on n mines.
+- Your goal is to find all of the mines without clicking on any of them. Having exactly n flags on n mines, or n tiles unopened with mines under them.
 
 - Each tile has a number on it that indicates the number of mines adjacent to it.
 
-- Try to deduce where the mines are and flag them.
+- Try to deduce where the mines are and flag them, or open the tiles that don't contain mines in them.
 
 
 ### Input: 
+
+Before playing, you have to choose a difficulty.
+
+There are 5 options corresponding to the following:
+
+1- 'E' - Easy (8×8 Grid with 10 Mines)
+
+2- 'M' - Medium (10×10 Grid with 20 Mines)
+
+3- 'H' - Hard (15×15 Grid with 45 Mines)
+
+4- 'B' - Brutal (20×20 Grid with 80 Mines)
+
+5- 'C' - Custom (custom grid size with a custom size of Mines)
 
 Input is entered through the CLI, using the following format:
 
@@ -24,27 +38,20 @@ You have 3 operations, 'O','F','?'
     
 2- 'F' - Places a flag on the tile.
 
-3- '?' - Places a question mark on the tile, this is for the user only, and won't affect mines or calculations.
+3- '?' - Places a question mark on the tile, this is for the user only, and won't affect mines or the program's calculations.
 
 Example:
 
-..A B C D E F G H 
-  
-A # # # # # # # # 
-
-B # # # # # # # # 
-
-C # # # # # # # # 
-
-D # # # # # # # # 
-
-E # # # # # # # # 
-
-F # # # # # # # # 
-
-G # # # # # # # # 
-
-H # # # # # # # # 
+|  | A | B | C | D | E | F | G | H |
+|--|---|---|---|---|---|---|---|---|
+|A | # | # | # | # | # | # | # | # | 
+|B | # | # | # | # | # | # | # | # | 
+|C | # | # | # | # | # | # | # | # | 
+|D | # | # | # | # | # | # | # | # | 
+|E | # | # | # | # | # | # | # | # | 
+|F | # | # | # | # | # | # | # | # | 
+|G | # | # | # | # | # | # | # | # | 
+|H | # | # | # | # | # | # | # | # | 
 
 A A O - > Opens the tile A,A.
 
