@@ -11,7 +11,7 @@ int main()
 	srand(time(NULL));
 
 	//Input
-	getInitialValues(height, width, numOfMines);
+	initialiseGame(height, width, numOfMines);
 
 	//Initialising the tiles in the visible grid with the character '#'
 	initVisibleToHash(height, width);
