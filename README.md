@@ -38,7 +38,7 @@ You have 3 operations, 'O','F','?'
     
 2- 'F' - Places a flag on the tile.
 
-3- '?' - Places a question mark on the tile, this is for the user only, and won't affect mines or calculations.
+3- '?' - Places a question mark on the tile, this is for the user only, and won't affect mines or the program's calculations.
 
 Example:
 
