@@ -1,19 +1,20 @@
 #include "functions.h"
-
 int main()
 {
 	//Declaration of variables
 	set < pair<int, int> > minesCoordinates;
 	int numOfMines, width, height;
 
+	vector <player> topPlayers; // Vector to hold the top players.
+	player mainPlayer = {}; //Struct to hold the data for the player.
 
 	//Linking srand with time to achieve less limited randomness
 	srand(time(NULL));
 
 	//Input
-	initialiseGame(height, width, numOfMines);
+	initialiseGame(height, width, numOfMines, topPlayers, mainPlayer);
 
-	//Initialising the tiles in the visible grid with the character '#'
+	//Initialising the tiles in the visible grid with the character '#', and the top players vector.
 	initVisibleToHash(height, width);
 
 	//Randomising coordinates for mines
@@ -30,7 +31,9 @@ int main()
 	printVisible(height, width);
 
 	//Playing the game!
-	playGame(height, width, numOfMines);
+	playGame(height, width, numOfMines, mainPlayer, topPlayers);
 
     return 0;
 }
+
+
