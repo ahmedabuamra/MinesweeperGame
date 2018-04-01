@@ -1,6 +1,17 @@
 # Minesweeper Game
 CLI Minesweeper game, soon to be updated to a GUI application.
+## How to run (CLI Version):
+-Download the .ZIP file from the repository.
 
+-Make sure you have g++ installed. If not, install it using your package manager.
+
+-Unzip the file and open a terminal in the directory the files are in. 
+
+-Type the following into the terminal:
+```
+chmod +x run.sh
+./run.sh
+```
 
 ## How to play (CLI Version):
 
