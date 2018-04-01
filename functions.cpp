@@ -1,15 +1,155 @@
 #include "functions.h"
 
 
-//Boolean flag to tell if a mine has been clicked on
-bool clickedOnMine(false);
+bool clickedOnMine(false);//Boolean flag to tell if a mine has been clicked on.
+bool won(false);//Boolean flag to tell if the player has won.
 
 //Arrays are made global to prevent stack overflow, and make them easier to use with functions.
 int grid[50][50];
 char visible[50][50];
 
+void charline(int x, char c, bool spaces)
+{
+	//A function that prints a string of characters x number of times.
+	if (spaces)
+	for (int i = 0; i  < x; i++)
+		cout << c << ' ';
+
+	else if (!spaces)
+		for (int i = 0; i  < x; i++)
+			cout << c << ' ';
+
+	cout << endl;
+}
+
+//Scoreboard functions
+void initialiseVector(vector <player> &topPlayers)
+{
+	//A function that initialises the topPlayers vector with generic data to avoid runtime errors.
+	for (int i = 0; i < 10; i++)
+		topPlayers.push_back(player());
+}
+
+void readScoreboard(vector <player> &topPlayers)
+{
+	//A function that reads the scoreboard from the scoreboard.scrb file.
+	ifstream scoreboardI;
+	string name;
+	long long milliSeconds;
+
+	scoreboardI.open("scoreboard.scrb");
+	for (int i = 0; i < 10; i++)
+	{
+		getline(scoreboardI, name, '*');
+
+		scoreboardI >> milliSeconds;
+
+		scoreboardI.ignore();
+
+		topPlayers[i].name = name;
+		topPlayers[i].milliSeconds = milliSeconds;
+
+		topPlayers[i].seconds = milliSeconds/1000;
+		topPlayers[i].minutes = topPlayers[i].seconds/60; ;
+		topPlayers[i].seconds %= 60;
+	}
+	scoreboardI.close();
+}
+
+void printScoreboard(vector <player> &topPlayers)
+{
+	//A function that prints the scoreboard to the player.
+	int width = 4, width2 = 30;
+	cout << "\t\t" << "Name" << setw(27) << "Minutes |" << "\t" << "Seconds" << endl;
+	charline(47, '-', false);
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (i == 9) width = 3;
+
+		if (topPlayers[i].milliSeconds != genericScoreNum)
+			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
+						setw(width2 - topPlayers[i].name.size())<<
+				  		topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
+
+		else cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
+					 setw(width2 - topPlayers[i].name.size())<<
+					 "N/A" << "\t\t\t" << "N/A" << endl;
+	}
+
+}
+
+void writeScoreboard(vector <player> &topPlayers)
+{
+	//A function that writes the scoreboard to the scoreboard.scrb file.
+	int width = 30;
+	ofstream scoreboardO;
+	scoreboardO.open("scoreboard.scrb");
+	for (int i = 0; i < 10; i++)
+	{
+		scoreboardO << topPlayers[i].name << "*" <<
+						setw(width - topPlayers[i].name.size())<<
+						topPlayers[i].milliSeconds << endl;
+	}
+	scoreboardO.close();
+}
+
+void swapStructs(struct player* first, struct player* second)
+{
+	//A function that swaps 2 structs using pointers.
+	player temp;
+	temp = *first;
+	*first = *second;
+	*second = temp;
+}
+
+void sortScoreboard(vector <player> &topPlayers)
+{
+	//A function that sorts the scoreboard in decreasing order.
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			if (topPlayers[j].milliSeconds > topPlayers[j+1].milliSeconds)
+			{
+				swapStructs(&topPlayers[j],&topPlayers[j+1]);
+			}
+		}
+	}
+}
+
+int checkPlayerScore(struct player mainPlayer, vector <player> &topPlayers)
+{
+	// A function that checks if the player should enter the scoreboard, if so
+	//it returns the index that they should stand in.
+
+	int index(-1);
+	for (int i = 0; i < 10; i++)
+		if (mainPlayer.milliSeconds < topPlayers[i].milliSeconds)
+		{
+			index = i;
+			vector <player>::iterator it;
+			it = topPlayers.begin() + index;
+
+			topPlayers.insert(it, mainPlayer);
+			topPlayers.pop_back();
+			return index;
+		}
+	return index; //returns -1 by default
+}
+
+void readyScoreboard(vector <player> &topPlayers)
+{
+	//A function that initialises the vector, reads the scoreboard, sorts the scoreboard,
+	// and then writes the scoreboard again to the file.
+	initialiseVector(topPlayers);
+	readScoreboard(topPlayers);
+	sortScoreboard(topPlayers);
+	writeScoreboard(topPlayers);
+}
 
 
+//Game functions
 void initVisibleToHash(int height, int width)
 {
 	//A function that initialises that visible grid to the character '#'
@@ -38,25 +178,59 @@ void chooseDifficulty(char c, int &height, int &width, int &numOfMines)
 			cin >> height >> width >> numOfMines;
 			break;
 		}  //Custom case
+
 		default: cout << "Error!" << endl;
 	}
 
 
 }
 
-void initialiseGame(int &height, int &width, int &numOfMines)
+void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &topPlayers, struct player &mainPlayer)
 {
-	//A function that passes the height, width and the number of mines in the grid
-	//by reference to input them
+	//A function that passes the height, width and the number of mines in the grid, as well as the user's name
+	//by passing them by reference.
 
 	cout << setw(15) << "Welcome to Minesweeper!" << endl;
-	cout << setw(0) << "Enter the difficulty you want to play (E, M, H, B, C): ";
 
-	char diff;
-	cin >> diff;
+	while (true)
+	{
+		cout << "Enter 'P' to play, 'S' to see the scoreboard, 'R' to reset the scoreboard: ";
+		char choice;
+		cin >> choice;
+		if (choice == 'P')
+		{
+			cout << "Enter your name: ";
 
-	chooseDifficulty(diff, height, width, numOfMines);
+			cin.ignore();
 
+			string name;
+			getline (cin, name);
+
+			mainPlayer.name = name;
+
+			cout << setw(0) << "Enter the difficulty you want to play (E, M, H, B, C): ";
+			char diff;
+			cin >> diff;
+			chooseDifficulty(diff, height, width, numOfMines);
+
+			break;
+		}
+
+		else if (choice == 'S')
+		{
+			readyScoreboard(topPlayers);
+			printScoreboard(topPlayers);
+		}
+
+		else if (choice == 'R')
+		{
+			for (int i = 0; i < 10; i++)
+				topPlayers.pop_back();
+
+			initialiseVector(topPlayers);
+			writeScoreboard(topPlayers);
+		}
+	}
 }
 
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
@@ -128,9 +302,7 @@ void printVisible(int height, int width)
 	cout << endl << "    ";
 
 	//Printing a separator between the top guide and the grid.
-	for (int i = 1; i <= width; i++)
-		cout << "- ";
-	cout << endl;
+	charline (width, '-', true);
 
 	for (int i = 1; i <= height; i++)
 	{
@@ -247,6 +419,7 @@ char endGame(int height, int width, int numOfMines)
 	if (cntr == numOfMines && flagCntr == numOfMines || emptyAreVisible)
 	{
 		cout << "Congratulations, you win!" << endl;
+		won = true;
 		return 'W'; // Returns W (for win) if the user puts flags on all of the mines
 	}
 
@@ -261,7 +434,7 @@ char endGame(int height, int width, int numOfMines)
 
 }
 
-void playGame(int height, int width, int numOfMines)
+void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers)
 {
 	auto start = steady_clock::now(); //Sets a start for counting time.
 
@@ -276,12 +449,40 @@ void playGame(int height, int width, int numOfMines)
 
 	auto end = steady_clock::now(); //Sets an end for counting time.
 
-	auto tSeconds = duration_cast <seconds> (end - start).count(); //Counting seconds
-	auto tMinutes = duration_cast <minutes> (end - start).count(); //Counting minutes
+	auto tMilliseconds = duration_cast <milliseconds> (end - start).count(); //Counting milliseconds
 
-	if (tMinutes > 0) //Condition that makes sure to prrint the minutes only if they are larger than 0.
-	cout << "The game took " << tMinutes << " minutes, and "
-		  << tSeconds - (tMinutes*60) << " seconds." << endl;
+	//Calculating Minutes and Seconds.
+	long long  tSeconds = tMilliseconds/1000;
+	long long  tMinutes = tSeconds/60;
+					tSeconds  %= 60;
+
+	//Assigning the values to the player's info in the struct.
+	mainPlayer.milliSeconds = tMilliseconds;
+	mainPlayer.minutes = tMinutes;
+	mainPlayer.seconds = tSeconds;
+
+		readyScoreboard(topPlayers);
+		int check = checkPlayerScore(mainPlayer, topPlayers);
+
+
+
+	if (tMinutes > 0) //Condition that makes sure to print the minutes only if they are larger than 0.
+	{
+		cout << "The game took " << tMinutes << " minutes, and "
+			  << tSeconds - (tMinutes*60) << " seconds." << endl;
+	}
+
 	else
+	{
 		cout << "The game took " << tSeconds << " seconds." << endl;
+	}
+
+	if (won)
+	{
+		if (check > -1)
+			cout << "New highscore! You are no #" << check + 1 << " on the scoreboard!" << endl;
+
+		printScoreboard(topPlayers);
+		writeScoreboard(topPlayers);
+	}
 }
