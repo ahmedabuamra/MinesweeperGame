@@ -8,16 +8,16 @@ bool won(false);//Boolean flag to tell if the player has won.
 int grid[50][50];
 char visible[50][50];
 
-void charline(int x, char c, bool spaces)
+void charline(int x, char c, char spaces)
 {
 	//A function that prints a string of characters x number of times.
-	if (spaces)
+	if (spaces == 'Y')
 	for (int i = 0; i  < x; i++)
 		cout << c << ' ';
 
-	else if (!spaces)
+	else if (spaces == 'N')
 		for (int i = 0; i  < x; i++)
-			cout << c << ' ';
+			cout << c;
 
 	cout << endl;
 }
@@ -61,7 +61,7 @@ void printScoreboard(vector <player> &topPlayers)
 	//A function that prints the scoreboard to the player.
 	int width = 4, width2 = 30;
 	cout << "\t\t" << "Name" << setw(27) << "Minutes |" << "\t" << "Seconds" << endl;
-	charline(47, '-', false);
+	charline(47, '-', 'N');
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -82,13 +82,13 @@ void printScoreboard(vector <player> &topPlayers)
 void writeScoreboard(vector <player> &topPlayers)
 {
 	//A function that writes the scoreboard to the scoreboard.scrb file.
-	int width = 30;
+	int width = 30; //For formatting only
 	ofstream scoreboardO;
 	scoreboardO.open("scoreboard.scrb");
 	for (int i = 0; i < 10; i++)
 	{
 		scoreboardO << topPlayers[i].name << "*" <<
-						setw(width - topPlayers[i].name.size())<<
+						setw(width - (int) topPlayers[i].name.size())<<
 						topPlayers[i].milliSeconds << endl;
 	}
 	scoreboardO.close();
@@ -224,8 +224,7 @@ void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &t
 
 		else if (choice == 'R')
 		{
-			for (int i = 0; i < 10; i++)
-				topPlayers.pop_back();
+			topPlayers.clear();
 
 			initialiseVector(topPlayers);
 			writeScoreboard(topPlayers);
@@ -302,7 +301,7 @@ void printVisible(int height, int width)
 	cout << endl << "    ";
 
 	//Printing a separator between the top guide and the grid.
-	charline (width, '-', true);
+	charline (width, '-', 'Y');
 
 	for (int i = 1; i <= height; i++)
 	{
@@ -356,7 +355,7 @@ void clickTile(int height, int width)
 
 	if (operation == 'O')
 	{
-		if (grid[y][x] == Mines_Flag)
+		if (grid[y][x] == Mines_Flag && visible[y][x] != 'F' )
 		{
 			showMinesIfLost(height, width);
 			visible[y][x] = '@'; // The '@' sign indicates an exploded mine
@@ -469,7 +468,7 @@ void playGame(int height, int width, int numOfMines, struct player mainPlayer, v
 	if (tMinutes > 0) //Condition that makes sure to print the minutes only if they are larger than 0.
 	{
 		cout << "The game took " << tMinutes << " minutes, and "
-			  << tSeconds - (tMinutes*60) << " seconds." << endl;
+			  << tSeconds << " seconds." << endl;
 	}
 
 	else

@@ -47,11 +47,10 @@ struct player
 };
 
 
-
 //Check the function definitions in the functions.cpp file to see the explanation for what each function does
 
 
-void charline(int x, char c, bool spaces);
+void charline(int x, char c, char spaces);
 
 //Scoreboard functions
 void initialiseVector(vector <player> &topPlayers);
