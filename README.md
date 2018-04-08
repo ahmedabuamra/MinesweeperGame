@@ -1,7 +1,7 @@
 # Minesweeper Game
 CLI Minesweeper game, soon to be updated to a GUI application.
 ## How to run (CLI Version):
--Make sure you're browsing the "CLI Game" branch on the repository.
+-Make sure you're browsing the "CLI-Game" branch on the repository.
 
 -Download the .ZIP file from the repository.
 
