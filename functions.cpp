@@ -4,7 +4,7 @@
 bool clickedOnMine(false);//Boolean flag to tell if a mine has been clicked on.
 bool won(false);//Boolean flag to tell if the player has won.
 
-//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
+				//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
 int grid[50][50];
 char visible[50][50];
 
@@ -12,11 +12,11 @@ void charline(int x, char c, char spaces)
 {
 	//A function that prints a string of characters x number of times.
 	if (spaces == 'Y')
-	for (int i = 0; i  < x; i++)
-		cout << c << ' ';
+		for (int i = 0; i < x; i++)
+			cout << c << ' ';
 
 	else if (spaces == 'N')
-		for (int i = 0; i  < x; i++)
+		for (int i = 0; i < x; i++)
 			cout << c;
 
 	cout << endl;
@@ -49,8 +49,8 @@ void readScoreboard(vector <player> &topPlayers)
 		topPlayers[i].name = name;
 		topPlayers[i].milliSeconds = milliSeconds;
 
-		topPlayers[i].seconds = milliSeconds/1000;
-		topPlayers[i].minutes = topPlayers[i].seconds/60; ;
+		topPlayers[i].seconds = milliSeconds / 1000;
+		topPlayers[i].minutes = topPlayers[i].seconds / 60; ;
 		topPlayers[i].seconds %= 60;
 	}
 	scoreboardI.close();
@@ -69,12 +69,12 @@ void printScoreboard(vector <player> &topPlayers)
 
 		if (topPlayers[i].milliSeconds != genericScoreNum)
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-						setw(width2 - topPlayers[i].name.size())<<
-				  		topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
+			setw(width2 - topPlayers[i].name.size()) <<
+			topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
 
 		else cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-					 setw(width2 - topPlayers[i].name.size())<<
-					 "N/A" << "\t\t\t" << "N/A" << endl;
+			setw(width2 - topPlayers[i].name.size()) <<
+			"N/A" << "\t\t\t" << "N/A" << endl;
 	}
 
 }
@@ -88,8 +88,8 @@ void writeScoreboard(vector <player> &topPlayers)
 	for (int i = 0; i < 10; i++)
 	{
 		scoreboardO << topPlayers[i].name << "*" <<
-						setw(width - (int) topPlayers[i].name.size())<<
-						topPlayers[i].milliSeconds << endl;
+			setw(width - (int)topPlayers[i].name.size()) <<
+			topPlayers[i].milliSeconds << endl;
 	}
 	scoreboardO.close();
 }
@@ -110,9 +110,9 @@ void sortScoreboard(vector <player> &topPlayers)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			if (topPlayers[j].milliSeconds > topPlayers[j+1].milliSeconds)
+			if (topPlayers[j].milliSeconds > topPlayers[j + 1].milliSeconds)
 			{
-				swapStructs(&topPlayers[j],&topPlayers[j+1]);
+				swapStructs(&topPlayers[j], &topPlayers[j + 1]);
 			}
 		}
 	}
@@ -164,22 +164,22 @@ void chooseDifficulty(char c, int &height, int &width, int &numOfMines)
 	//chosen by the player.
 	switch (c)
 	{
-		case 'E':height = 8, width = 8, numOfMines = 10; break; //Easy case
+	case 'E':height = 8, width = 8, numOfMines = 10; break; //Easy case
 
-		case 'M':height = 10, width = 10, numOfMines = 20; break; //Medium case
+	case 'M':height = 10, width = 10, numOfMines = 20; break; //Medium case
 
-		case 'H':height = 15, width = 15, numOfMines = 45; break; //Hard case
+	case 'H':height = 15, width = 15, numOfMines = 45; break; //Hard case
 
-		case 'B':height = 20, width = 20, numOfMines = 80; break; //Brutal case
+	case 'B':height = 20, width = 20, numOfMines = 80; break; //Brutal case
 
-		case 'C':
-		{
-			cout << "Enter grid size (height * width), and # of mines: ";
-			cin >> height >> width >> numOfMines;
-			break;
-		}  //Custom case
+	case 'C':
+	{
+		cout << "Enter grid size (height * width), and # of mines: ";
+		cin >> height >> width >> numOfMines;
+		break;
+	}  //Custom case
 
-		default: cout << "Error!" << endl;
+	default: cout << "Error!" << endl;
 	}
 
 
@@ -204,7 +204,7 @@ void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &t
 			cin.ignore();
 
 			string name;
-			getline (cin, name);
+			getline(cin, name);
 
 			mainPlayer.name = name;
 
@@ -233,7 +233,7 @@ void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &t
 }
 
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-										int numOfMines, int height, int width)
+	int numOfMines, int height, int width)
 {
 	//A function that randomises the coordinates for the mines.
 	while (mineSetSize < numOfMines)
@@ -276,7 +276,7 @@ void placeMines(set < pair<int, int> > &minesCoordinates)
 {
 	//A function that places the mines
 	for (set<pair<int, int> >::iterator it = minesCoordinates.begin(); it != minesCoordinates.end(); it++)
-	grid[it->first][it->second] = Mines_Flag;
+		grid[it->first][it->second] = Mines_Flag;
 }
 
 void showMinesIfLost(int height, int width)
@@ -297,16 +297,16 @@ void printVisible(int height, int width)
 	//Printing out the top guide
 	cout << "    ";
 	for (int i = 1; i <= width; i++)
-		cout << (char) (i + 64) << ' ';
+		cout << (char)(i + 64) << ' ';
 	cout << endl << "    ";
 
 	//Printing a separator between the top guide and the grid.
-	charline (width, '-', 'Y');
+	charline(width, '-', 'Y');
 
 	for (int i = 1; i <= height; i++)
 	{
-		cout << (char) (i + 64) << " | "; // Printing out a character and a pipe from the side guide
-		//before printing the row itself
+		cout << (char)(i + 64) << " | "; // Printing out a character and a pipe from the side guide
+										 //before printing the row itself
 		for (int j = 1; j <= width; j++)
 		{
 			cout << visible[i][j] << ' ';
@@ -319,10 +319,10 @@ void openTiles(int y, int x, int height, int width)
 {
 	//A function that checks the open tiles around the tiles that was clicked on
 	//using DFS
-	if(y > height || y == 0 || x > width || x == 0 || visible[y][x] != '#')
+	if (y > height || y == 0 || x > width || x == 0 || visible[y][x] != '#')
 		return;
 
-	if(grid[y][x] != 0)
+	if (grid[y][x] != 0)
 	{
 		visible[y][x] = (char)(grid[y][x] + '0');
 		return;
@@ -330,23 +330,22 @@ void openTiles(int y, int x, int height, int width)
 
 	visible[y][x] = (char)(grid[y][x] + '0');
 
-	openTiles(y+1,x, height, width); //North
-	openTiles(y-1,x, height, width); //South
-	openTiles(y,x+1, height, width); //East
-	openTiles(y,x-1, height, width); //West
+	openTiles(y + 1, x, height, width); //North
+	openTiles(y - 1, x, height, width); //South
+	openTiles(y, x + 1, height, width); //East
+	openTiles(y, x - 1, height, width); //West
 
-	openTiles(y-1,x-1, height, width); //South-West
-	openTiles(y+1,x+1, height, width);	//North-East
-	openTiles(y-1,x+1, height, width);	//South-East
-	openTiles(y+1,x-1, height, width);	//North-West
+	openTiles(y - 1, x - 1, height, width); //South-West
+	openTiles(y + 1, x + 1, height, width);	//North-East
+	openTiles(y - 1, x + 1, height, width);	//South-East
+	openTiles(y + 1, x - 1, height, width);	//North-West
 }
 
 void clickTile(int height, int width, int y, int x, char operation)
 {
 	// A function that imitates the action of clicking on a tile.
-	
-	y++, x++; // one based program and buttons are zero based
-	
+
+	y++, x++; // the program is one based while the buttons are zero based
 	if (operation == 'O')
 	{
 		if (grid[y][x] == Mines_Flag && visible[y][x] != 'F')
@@ -427,6 +426,14 @@ char endGame(int height, int width, int numOfMines)
 
 }
 
+void getVisiable(char arr[50][50]) 
+{
+	for (int i = 0; i < 50; i++)
+		for (int j = 0; j < 50; j++)
+			arr[i][j] = visible[i][j];
+}
+
+/*
 void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers)
 {
 	auto start = steady_clock::now(); //Sets a start for counting time.
@@ -437,32 +444,31 @@ void playGame(int height, int width, int numOfMines, struct player mainPlayer, v
 	do
 	{
 		clickTile(height, width);
-	}
-	while (endGame(height, width, numOfMines) == 'N');
+	} while (endGame(height, width, numOfMines) == 'N');
 
 	auto end = steady_clock::now(); //Sets an end for counting time.
 
 	auto tMilliseconds = duration_cast <milliseconds> (end - start).count(); //Counting milliseconds
 
-	//Calculating Minutes and Seconds.
-	long long  tSeconds = tMilliseconds/1000;
-	long long  tMinutes = tSeconds/60;
-					tSeconds  %= 60;
+																			 //Calculating Minutes and Seconds.
+	long long  tSeconds = tMilliseconds / 1000;
+	long long  tMinutes = tSeconds / 60;
+	tSeconds %= 60;
 
 	//Assigning the values to the player's info in the struct.
 	mainPlayer.milliSeconds = tMilliseconds;
 	mainPlayer.minutes = tMinutes;
 	mainPlayer.seconds = tSeconds;
 
-		readyScoreboard(topPlayers);
-		int check = checkPlayerScore(mainPlayer, topPlayers);
+	readyScoreboard(topPlayers);
+	int check = checkPlayerScore(mainPlayer, topPlayers);
 
 
 
 	if (tMinutes > 0) //Condition that makes sure to print the minutes only if they are larger than 0.
 	{
 		cout << "The game took " << tMinutes << " minutes, and "
-			  << tSeconds << " seconds." << endl;
+			<< tSeconds << " seconds." << endl;
 	}
 
 	else
@@ -479,3 +485,4 @@ void playGame(int height, int width, int numOfMines, struct player mainPlayer, v
 		writeScoreboard(topPlayers);
 	}
 }
+*/
