@@ -341,21 +341,15 @@ void openTiles(int y, int x, int height, int width)
 	openTiles(y+1,x-1, height, width);	//North-West
 }
 
-void clickTile(int height, int width)
+void clickTile(int height, int width, int y, int x, char operation)
 {
 	// A function that imitates the action of clicking on a tile.
-
-	char yC, xC;
-	char operation;
-
-	cin >> yC >> xC;
-	cin >> operation;
-
-	int y = yC - 64, x = xC - 64;
-
+	
+	y++, x++; // one based program and buttons are zero based
+	
 	if (operation == 'O')
 	{
-		if (grid[y][x] == Mines_Flag && visible[y][x] != 'F' )
+		if (grid[y][x] == Mines_Flag && visible[y][x] != 'F')
 		{
 			showMinesIfLost(height, width);
 			visible[y][x] = '@'; // The '@' sign indicates an exploded mine
