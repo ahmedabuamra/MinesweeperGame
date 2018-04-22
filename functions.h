@@ -1,6 +1,7 @@
 #ifndef MINESWEEPER_FUNCTIONS_H
 #define MINESWEEPER_FUNCTIONS_H
 
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -41,9 +42,9 @@ using std::chrono::duration_cast;
 
 struct player
 {
-	 string name = "GENERIC";
-	 long long minutes = genericScoreNum, seconds = genericScoreNum;
-	 long long milliSeconds = genericScoreNum;
+	string name = "GENERIC";
+	long long minutes = genericScoreNum, seconds = genericScoreNum;
+	long long milliSeconds = genericScoreNum;
 };
 
 
@@ -67,14 +68,15 @@ void initVisibleToHash(int height, int width);
 void chooseDifficulty(char c, int &height, int &width, int &numOfMines);
 void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &topPlayers, struct player &mainPlayer);
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-										int numOfMines, int height, int width);
+int numOfMines, int height, int width);
 void setValueForTile(int r, int c);
 void setValuesForGrid(int height, int width);
 void placeMines(set < pair<int, int> > &minesCoordinates);
 void showMinesIfLost(int height, int width);
-void printVisible (int height, int width);
+void printVisible(int height, int width);
 void openTiles(int y, int x, int height, int width);
-void clickTile(int height, int width);
+void clickTile(int height, int width, int y, int x, char operation);
+void getVisiable(char arr[50][50]);
 char endGame(int height, int width, int numOfMines);
 void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers);
 
