@@ -279,6 +279,7 @@ void setValuesForGrid(int height, int width)
 void placeMines(set < pair<int, int> > &minesCoordinates)
 {
 	//A function that places the mines
+	memset(grid, 0, sizeof(grid));
 	for (set<pair<int, int> >::iterator it = minesCoordinates.begin(); it != minesCoordinates.end(); it++)
 		grid[it->first][it->second] = Mines_Flag;
 }
@@ -455,3 +456,44 @@ bool getWin()
 {
 	return won;
 }
+
+/*
+void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers)
+{
+auto start = steady_clock::now(); //Sets a start for counting time.
+cout << "Enter tile address and then the command(?,F,O): ";
+//Playing the game!
+do
+{
+clickTile(height, width);
+} while (endGame(height, width, numOfMines) == 'N');
+auto end = steady_clock::now(); //Sets an end for counting time.
+auto tMilliseconds = duration_cast <milliseconds> (end - start).count(); //Counting milliseconds
+//Calculating Minutes and Seconds.
+long long  tSeconds = tMilliseconds / 1000;
+long long  tMinutes = tSeconds / 60;
+tSeconds %= 60;
+//Assigning the values to the player's info in the struct.
+mainPlayer.milliSeconds = tMilliseconds;
+mainPlayer.minutes = tMinutes;
+mainPlayer.seconds = tSeconds;
+readyScoreboard(topPlayers);
+int check = checkPlayerScore(mainPlayer, topPlayers);
+if (tMinutes > 0) //Condition that makes sure to print the minutes only if they are larger than 0.
+{
+cout << "The game took " << tMinutes << " minutes, and "
+<< tSeconds << " seconds." << endl;
+}
+else
+{
+cout << "The game took " << tSeconds << " seconds." << endl;
+}
+if (won)
+{
+if (check > -1)
+cout << "New highscore! You are no #" << check + 1 << " on the scoreboard!" << endl;
+printScoreboard(topPlayers);
+writeScoreboard(topPlayers);
+}
+}
+*/
