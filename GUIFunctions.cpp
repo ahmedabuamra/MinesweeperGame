@@ -177,7 +177,8 @@ void MainMenu()
 	c->getRenderer()->setForegroundColor("Yellow");
 	c->setText("Music");
 	c->setFont("art/arcadeclassic.TTF");
-	c->check();
+	if (music.getStatus() == music.Stopped)            c->uncheck();
+	else if (music.getStatus()==music.Playing)         c->check();
 	c->connect("checked", [&]() { music.play(); });
 	c->connect("unchecked", [&]() { music.stop(); });
 	Menu_Widgets.insert(Menu_Widgets.end(), c);
