@@ -185,7 +185,7 @@ void MainMenu()
 
 	// Add buttons 
 	tgui::Button::Ptr M_buttons[4];
-	string txts[4] = { "NewGame","ScoreBoard","Creidts","Exit" };
+	string txts[4] = { "NewGame","ScoreBoard","Credits","Exit" };
 	float v = 530;
 	for (int i = 0; i < 4; i++)
 	{
@@ -529,8 +529,7 @@ void Credits()
 	text->setTextSize(48);
 	text->setPosition(windowWidth/6, 10);
 	text->setFont("art/arcadeclassic.TTF");
-    text->setText("Backend Development  \n  Ahmed Elmayyah (Satharus) \n Ahmed Aboamra |ahmedabuamra| \n \n GUI and Art \n Andrew Awni |GitHub name| \n AbdulRahman Yousry |GitHub name| \n \n Music \n |Price of Failure| by |Perturbator from I am The Night| \n "
-	);
+	text->setText("Backend  Development  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n \n GUI   and   Art \n Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"	);
 
 	Menu_Widgets.insert(Menu_Widgets.end(), text);
 	Back_Button();
