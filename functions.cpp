@@ -4,7 +4,7 @@
 bool clickedOnMine(false);//Boolean flag to tell if a mine has been clicked on.
 bool won(false);//Boolean flag to tell if the player has won.
 
-//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
+				//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
 int grid[50][50];
 char visible[50][50];
 
@@ -69,12 +69,12 @@ void printScoreboard(vector <player> &topPlayers)
 
 		if (topPlayers[i].milliSeconds != genericScoreNum)
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-				  setw(width2 - topPlayers[i].name.size()) <<
-				  topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
+			setw(width2 - topPlayers[i].name.size()) <<
+			topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
 
 		else cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-					 setw(width2 - topPlayers[i].name.size()) <<
-					 "N/A" << "\t\t\t" << "N/A" << endl;
+			setw(width2 - topPlayers[i].name.size()) <<
+			"N/A" << "\t\t\t" << "N/A" << endl;
 	}
 
 }
@@ -88,8 +88,8 @@ void writeScoreboard(vector <player> &topPlayers)
 	for (int i = 0; i < 10; i++)
 	{
 		scoreboardO << topPlayers[i].name << "*" <<
-						setw(width - (int)topPlayers[i].name.size()) <<
-						topPlayers[i].milliSeconds << endl;
+			setw(width - (int)topPlayers[i].name.size()) <<
+			topPlayers[i].milliSeconds << endl;
 	}
 	scoreboardO.close();
 }
@@ -164,22 +164,22 @@ void chooseDifficulty(char c, int &height, int &width, int &numOfMines)
 	//chosen by the player.
 	switch (c)
 	{
-		case 'E':height = 8, width = 8, numOfMines = 10; break; //Easy case
+	case 'E':height = 8, width = 8, numOfMines = 10; break; //Easy case
 
-		case 'M':height = 10, width = 10, numOfMines = 20; break; //Medium case
+	case 'M':height = 10, width = 10, numOfMines = 20; break; //Medium case
 
-		case 'H':height = 15, width = 15, numOfMines = 45; break; //Hard case
+	case 'H':height = 15, width = 15, numOfMines = 45; break; //Hard case
 
-		case 'B':height = 20, width = 20, numOfMines = 80; break; //Brutal case
+	case 'B':height = 20, width = 20, numOfMines = 80; break; //Brutal case
 
-		case 'C':
-		{
-			cout << "Enter grid size (height * width), and # of mines: ";
-			cin >> height >> width >> numOfMines;
-			break;
-		}  //Custom case
+	case 'C':
+	{
+		cout << "Enter grid size (height * width), and # of mines: ";
+		cin >> height >> width >> numOfMines;
+		break;
+	}  //Custom case
 
-		default: cout << "Error!" << endl;
+	default: cout << "Error!" << endl;
 	}
 
 
@@ -233,9 +233,13 @@ void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &t
 }
 
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-										int numOfMines, int height, int width)
+	int numOfMines, int height, int width)
 {
 	//A function that randomises the coordinates for the mines.
+	
+	//clear every time, to solve bug number 
+	minesCoordinates.clear();
+	srand(time(NULL));
 	while (mineSetSize < numOfMines)
 	{
 		int y = rand() % height + 1;
@@ -306,7 +310,7 @@ void printVisible(int height, int width)
 	for (int i = 1; i <= height; i++)
 	{
 		cout << (char)(i + 64) << " | "; // Printing out a character and a pipe from the side guide
-		//before printing the row itself
+										 //before printing the row itself
 		for (int j = 1; j <= width; j++)
 		{
 			cout << visible[i][j] << ' ';
@@ -355,11 +359,11 @@ void clickTile(int height, int width, int y, int x, char operation)
 			clickedOnMine = true;
 		}
 
-			/*else if (visible[y][x] == 'F')
-				visible[y][x] = '#';
+		/*else if (visible[y][x] == 'F')
+		visible[y][x] = '#';
 
-			else if (visible[y][x] == '?')
-				visible[y][x] = '#';*/
+		else if (visible[y][x] == '?')
+		visible[y][x] = '#';*/
 
 		else
 			openTiles(y, x, height, width);
@@ -435,18 +439,19 @@ char endGame(int height, int width, int numOfMines)
 
 }
 
-void getVisiable(char arr[50][50])
+void getVisible(char arr[50][50])
 {
 	for (int i = 0; i < 50; i++)
 		for (int j = 0; j < 50; j++)
 			arr[i][j] = visible[i][j];
 }
 
-bool GetClickedONMine()
+bool getClickedONMine()
 {
 	return clickedOnMine;
 }
-bool GetWin()
+
+bool getWin()
 {
 	return won;
 }
