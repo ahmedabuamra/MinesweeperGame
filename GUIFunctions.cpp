@@ -35,6 +35,7 @@ tgui::Texture tilenums[9];
 tgui::Texture mine, Emine, flaggedMine, flag, QMark;
 tgui::Texture Enter_Button, HEnter_Button;
 tgui::Texture textbox;
+tgui::Texture timer;
 char my_visible[50][50];
 
 vector <player> topPlayers(20); // Vector to hold the top players.
@@ -49,7 +50,7 @@ string gameplay_info = "";
 bool iswon;      // makes sure win function is called once 
 
 
-//time calc.
+				 //time calc.
 steady_clock::time_point clock_begin;
 steady_clock::duration time_span;
 long long second_cnt;
@@ -70,8 +71,8 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 			auto clock_end = steady_clock::now();
 			auto tMilliseconds = duration_cast <milliseconds> (clock_end - clock_begin).count(); //Counting milliseconds
 			second_cnt = tMilliseconds / 1000;
-			gameplay_info = "          " + std::to_string(flgcntr);
-			name_time->setText(mainPlayer.name + "\n\n\n" + gameplay_info + "\n\n\n\nTime: " + std::to_string(second_cnt));
+			gameplay_info = "    " + std::to_string(flgcntr);
+			name_time->setText(mainPlayer.name + "\n\n\n" + gameplay_info + "\n\n\n\n          " + std::to_string(second_cnt));
 		}
 		sf::Event event;
 		while (window->pollEvent(event))
@@ -191,6 +192,7 @@ void MainMenu()
 	flag.load("art/flag.png");
 	QMark.load("art/qmark.png");
 	textbox.load("art/mainmenuitems/textbox.png");
+	timer.load("art/mainmenuitems/timer.png");
 
 	//Add background
 	tgui::Picture::Ptr Bpicture = tgui::Picture::create("art/BackGround.png");
@@ -571,7 +573,7 @@ void FinishedLevel(int width, int height, bool won)
 		auto clock_end = steady_clock::now();
 		auto tMilliseconds = duration_cast <milliseconds> (clock_end - clock_begin).count(); //Counting milliseconds
 
-		//Calculating Minutes and Seconds.
+																							 //Calculating Minutes and Seconds.
 		long long  tSeconds = tMilliseconds / 1000;
 		long long  tMinutes = tSeconds / 60;
 		tSeconds %= 60;
@@ -631,7 +633,7 @@ void Credits()
 	text->setPosition(windowWidth / 6, 10);
 	text->setFont("art/arcadeclassic.TTF");
 	text->setText("Backend  Development  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n \n GUI   and   Art \n Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
-		);
+	);
 
 	Menu_Widgets.insert(Menu_Widgets.end(), text);
 	Back_Button();
@@ -666,14 +668,14 @@ void NameInput()
 	Back_Button();
 }
 
-string format_setter(string name, int len) 
+string format_setter(string name, int len)
 {
 	string ret = name;
 	for (int i = name.size(); i < len; i++) ret += " ";
 	return ret;
 }
 
-void initScoreBoardGUI() 
+void initScoreBoardGUI()
 {
 	int width = 80; //For formatting only
 	ofstream scoreboardO;
@@ -701,8 +703,8 @@ void ShowScoreBoard()
 	Dtext->setTextStyle(sf::Text::Style::Bold);
 	Dtext->setTextStyle(sf::Text::Style::Underlined);
 	Dtext->setTextSize(24);
-	Dtext->setPosition(windowWidth / 6, 10);
-	string top = "  Name                                                                        Score";
+	Dtext->setPosition(100, 10);
+	string top = "Name                                                                        Score";
 	Dtext->setText(top);
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
@@ -716,20 +718,29 @@ void ShowScoreBoard()
 	for (int i = 0; i < 10; i++)
 	{
 		if (i == 9) width = 3;
-		// Add label text m
-		string playerData;
-		getline(scoreboardI, playerData);
-		tgui::Label::Ptr text[10];
+		string name = topPlayers[i].name;
+		string score = std::to_string(topPlayers[i].milliSeconds / 1000);
+		tgui::Label::Ptr text[20];
 		text[i] = tgui::Label::create();
-		text[i]->setSize(1000, 60);
+		text[i]->setSize(500, 60);
 		text[i]->setTextColor("Black");
-
 		text[i]->setTextStyle(sf::Text::Style::Bold);
 		text[i]->setTextSize(18);
-		text[i]->setPosition(windowWidth / 6, v);
+		text[i]->setPosition(100, v);
 		Menu_Widgets.insert(Menu_Widgets.end(), text[i]);
 		gui.add(text[i]);
-		text[i]->setText(playerData);
+		text[i]->setText(name);
+
+		text[i+10] = tgui::Label::create();
+		text[i + 10]->setSize(500, 60);
+		text[i + 10]->setTextColor("Black");
+		text[i + 10]->setTextStyle(sf::Text::Style::Bold);
+		text[i + 10]->setTextSize(18);
+		text[i + 10]->setPosition(600, v);
+		Menu_Widgets.insert(Menu_Widgets.end(), text[i + 10]);
+		gui.add(text[i + 10]);
+		text[i + 10]->setText(score);
+
 		v += 60;
 	}
 	scoreboardI.close();
@@ -750,7 +761,13 @@ void Name_TimeDisplay()
 
 	tgui::Picture::Ptr flg = tgui::Picture::create(flag);
 	flg->setSize(40, 40);
-	flg->setPosition(830, 50);
+	flg->setPosition(880, 50);
 	Menu_Widgets.insert(Menu_Widgets.end(), flg);
 	gui.add(flg);
+
+	tgui::Picture::Ptr time = tgui::Picture::create(timer);
+	time->setSize(40, 40);
+	time->setPosition(880, 120);
+	Menu_Widgets.insert(Menu_Widgets.end(), time);
+	gui.add(time);
 }
