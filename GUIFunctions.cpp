@@ -50,9 +50,9 @@ bool iswon;      // makes sure win function is called once
 
 
 //time calc.
-steady_clock::time_point clock_begin, clock_end;
+steady_clock::time_point clock_begin;
 steady_clock::duration time_span;
-
+long long second_cnt;
 
 void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 {
@@ -64,6 +64,15 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 							// main loop
 	while (window->isOpen())
 	{
+		if (lanched_Level)
+		{
+			//side part of level
+			auto clock_end = steady_clock::now();
+			auto tMilliseconds = duration_cast <milliseconds> (clock_end - clock_begin).count(); //Counting milliseconds
+			second_cnt = tMilliseconds / 1000;
+			gameplay_info = "          " + std::to_string(flgcntr);
+			name_time->setText(mainPlayer.name + "\n\n\n" + gameplay_info + "\n\n\n\nTime: " + std::to_string(second_cnt));
+		}
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
@@ -71,6 +80,7 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 				window->close();
 			if (lanched_Level)
 			{
+
 				// Loop to add flag or Qmark (?) when right clicked 
 				for (int i = 0; i < Gheight; i++)
 				{
@@ -106,8 +116,6 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 					}
 
 				}
-				gameplay_info = "          " + std::to_string(flgcntr);
-				name_time->setText(mainPlayer.name + "\n\n\n" + gameplay_info);
 			}
 
 			if (getWin() && !iswon)
@@ -401,6 +409,9 @@ void Launch_Level(int width, int height, int numOfmines)
 		v += 768 / height;
 		H = 0;
 	}
+
+
+
 	Gwidth = width;
 	Gheight = height;
 	GMinesnum = numOfmines;
@@ -553,11 +564,11 @@ void FinishedLevel(int width, int height, bool won)
 	txt->setTextColor("White");
 
 	//End Time & duration
-	clock_end = steady_clock::now();
 
 	if (won)
 	{
 		txt->setText("You \n \n Win!");
+		auto clock_end = steady_clock::now();
 		auto tMilliseconds = duration_cast <milliseconds> (clock_end - clock_begin).count(); //Counting milliseconds
 
 		//Calculating Minutes and Seconds.
@@ -670,7 +681,7 @@ void initScoreBoardGUI()
 	for (int i = 0; i < 10; i++)
 	{
 		scoreboardO << topPlayers[i].name <<
-			setw(width - (int)topPlayers[i].name.size() - 5) <<
+			setw(width - (int)topPlayers[i].name.size()) <<
 			topPlayers[i].milliSeconds / 1000 << endl;
 	}
 	scoreboardO.close();
