@@ -17,6 +17,8 @@ tgui::EditBox::Ptr E_height;
 tgui::EditBox::Ptr E_width;
 tgui::EditBox::Ptr E_numOfmines;
 tgui::EditBox::Ptr PlayerName;
+//Text for name and time 
+tgui::Label::Ptr name_time;
 // Sounds
 sf::SoundBuffer buffer;
 sf::Music music;
@@ -30,26 +32,26 @@ tgui::Button::Ptr **button;
 tgui::Texture bar, Hbar, Cbar;
 tgui::Texture tile, Htile, Ctile;
 tgui::Texture tilenums[9];
-tgui::Texture mine, Emine,flaggedMine, flag, QMark;
-tgui::Texture Enter_Button,HEnter_Button;
+tgui::Texture mine, Emine, flaggedMine, flag, QMark;
+tgui::Texture Enter_Button, HEnter_Button;
 tgui::Texture textbox;
 char my_visible[50][50];
 
 vector <player> topPlayers; // Vector to hold the top players.
 player mainPlayer = {}; //Struct to hold the data for the player.
 
-bool rc;   // detect if the grid is created 
+bool lanched_Level;   // detect if the grid is created 
 int Gwidth = 8;   //Global width of the grid 
 int Gheight = 8;  //Global height of the grid 
 int GMinesnum = 10;// Global number of mines
 
 bool iswon;      // makes sure win function is called once 
 
-void MainWindowDisplay(float W_width, float W_height, std::string W_name,sf::Style::Titlebar|sf::Style::Close)
+void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 {
 	//Function that displays the window and detects GUI events
 
-	window = new sf::RenderWindow(sf::VideoMode(W_width, W_height), W_name);
+	window = new sf::RenderWindow(sf::VideoMode(W_width, W_height), W_name,sf::Style::Titlebar|sf::Style::Close);
 
 	gui.setWindow(*window); // Create the gui and attach it to the window.
 							// main loop
@@ -60,15 +62,14 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name,sf::Sty
 		{
 			if (event.type == sf::Event::Closed)
 				window->close();
-			if (rc)
-		    {
+			if (lanched_Level)
+			{
 			// Loop to add flag or Qmark (?) when right clicked 
 			for (int i = 0; i < Gheight; i++)
 			{
 				for (int j = 0; j < Gwidth; j++)
 				{
-					if (rc)
-					{
+					
 						if (button[i][j]->mouseOnWidget(event.mouseButton.x, event.mouseButton.y) && button[i][j]->isEnabled())
 						{
 							if (event.type == sf::Event::MouseButtonPressed&&event.mouseButton.button == sf::Mouse::Right)
@@ -96,9 +97,10 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name,sf::Sty
 					}
 
 				}
+			name_time->setText(mainPlayer.name);
 			}
 
-			if (getWin()&&!iswon)
+			if (getWin() && !iswon)
 			{
 				FinishedLevel(Gwidth, Gheight, true);
 				SoundPlay("sound", "sounds/win.flac", false);
@@ -212,7 +214,7 @@ void MainMenu()
 	for (int i = 0; i < 4; i++)
 	{
 		txts[i].load("art/mainmenuitems/m" + std::to_string(i) + temp);
-		Htxts[i].load("art/mainmenuitems/Hm" +std::to_string(i) + temp);
+		Htxts[i].load("art/mainmenuitems/Hm" + std::to_string(i) + temp);
 		M_buttons[i] = tgui::Button::create();
 		M_buttons[i]->getRenderer()->setNormalTexture(txts[i]);
 		M_buttons[i]->getRenderer()->setHoverTexture(Htxts[i]);
@@ -254,7 +256,7 @@ void LevelMenu()
 
 	int level = 0;
 	string temp = ".png";
-	tgui::Texture dif[5] ;
+	tgui::Texture dif[5];
 	tgui::Texture Hdif[5];
 	for (int i = 0; i<5; i++)
 	{
@@ -387,7 +389,8 @@ void Launch_Level(int width, int height, int numOfmines)
 	Gwidth = width;
 	Gheight = height;
 	GMinesnum = numOfmines;
-	rc = true;
+	lanched_Level = true;
+	Name_TimeDisplay();
 	Back_Button();
 }
 
@@ -561,6 +564,7 @@ void FinishedLevel(int width, int height, bool won)
 
 	music.pause();
 	
+
 	// Disable pressing for the remaining grid tiles
 	for (int i = 0; i < height; i++)
 	{
@@ -632,7 +636,7 @@ void ShowScoreBoard()
 	Dtext->setText("  Name                                       Minutes |  Seconds");
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
-	
+
 
 	int width = 4, width2 = 30;
 	cout << "\t\t" << "Name" << setw(27) << "Minutes |" << "\t" << "Seconds" << endl;
@@ -656,9 +660,9 @@ void ShowScoreBoard()
 
 		if (topPlayers[i].milliSeconds != genericScoreNum)
 		{
-			 s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                       ";
-			 s2 = std::to_string(topPlayers[i].minutes) + "        " + std::to_string(topPlayers[i].seconds);
-			 text[i]->setText(s1 + s2 );
+			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                       ";
+			s2 = std::to_string(topPlayers[i].minutes) + "        " + std::to_string(topPlayers[i].seconds);
+			text[i]->setText(s1 + s2);
 
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
@@ -669,17 +673,29 @@ void ShowScoreBoard()
 		{
 			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                        ";
 			s2 = "N/A         N/A";
-			text[i]->setText(s1 + s2 );
+			text[i]->setText(s1 + s2);
 
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
 				"N/A" << "\t\t\t" << "N/A" << endl;
 		}
 		v += 60;
-		
+
 	}
-	
-	
+
+
 	Back_Button();
-	
+
+}
+
+void Name_TimeDisplay()
+{
+	// Add label text for Name and time
+    name_time = tgui::Label::create();
+	name_time->setSize(400, 400);
+	name_time->setTextSize(24);
+	name_time->setPosition(900, 10);
+	name_time->setTextStyle(sf::Text::Style::Bold);
+	name_time->setTextColor("White");
+	gui.add(name_time);
 }
