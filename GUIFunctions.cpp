@@ -651,17 +651,25 @@ void NameInput()
 	Back_Button();
 }
 
-void initScoreBoardGUI() {
-	ofstream scoreboardI;
-	scoreboardI.open("scoreboardGUI.scrb");
+string format_setter(string name, int len) 
+{
+	string ret = name;
+	for (int i = name.size(); i < len; i++) ret += " ";
+	return ret;
+}
+
+void initScoreBoardGUI() 
+{
+	int width = 80; //For formatting only
+	ofstream scoreboardO;
+	scoreboardO.open("scoreboardGUI.scrb");
 	for (int i = 0; i < 10; i++)
 	{
-		if (topPlayers[i].milliSeconds != genericScoreNum)
-			scoreboardI << topPlayers[i].name << setw(70) << topPlayers[i].milliSeconds / 1000 << endl;
-		else
-			scoreboardI << topPlayers[i].name << setw(70) << "N/A" << endl;
+		scoreboardO << topPlayers[i].name <<
+			setw(width - (int)topPlayers[i].name.size()) <<
+			topPlayers[i].milliSeconds / 1000 << endl;
 	}
-	scoreboardI.close();
+	scoreboardO.close();
 }
 
 void ShowScoreBoard()
@@ -669,6 +677,7 @@ void ShowScoreBoard()
 	//A function that prints the scoreboard to the player.
 
 	readyScoreboard(topPlayers);
+	initScoreBoardGUI();
 
 	// Add label text 
 	tgui::Label::Ptr Dtext;
@@ -678,14 +687,14 @@ void ShowScoreBoard()
 	Dtext->setTextStyle(sf::Text::Style::Underlined);
 	Dtext->setTextSize(24);
 	Dtext->setPosition(windowWidth / 6, 10);
-	Dtext->setText("  Name                                                                 Score");
+	string top = "  Name                                                                        Score";
+	Dtext->setText(top);
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
 
 
 	int width = 4, width2 = 30;
 	//open scoreboard file
-	initScoreBoardGUI();
 	ifstream scoreboardI;
 	scoreboardI.open("scoreboardGUI.scrb");
 	float v = 70;
