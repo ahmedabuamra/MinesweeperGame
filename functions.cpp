@@ -4,7 +4,7 @@
 bool clickedOnMine(false);//Boolean flag to tell if a mine has been clicked on.
 bool won(false);//Boolean flag to tell if the player has won.
 
-//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
+				//Arrays are made global to prevent stack overflow, and make them easier to use with functions.
 int grid[50][50];
 char visible[50][50];
 
@@ -82,6 +82,7 @@ void printScoreboard(vector <player> &topPlayers)
 void writeScoreboard(vector <player> &topPlayers)
 {
 	//A function that writes the scoreboard to the scoreboard.scrb file.
+	sortScoreboard(topPlayers);
 	int width = 30; //For formatting only
 	ofstream scoreboardO;
 	scoreboardO.open("scoreboard.scrb");
@@ -103,19 +104,13 @@ void swapStructs(struct player* first, struct player* second)
 	*second = temp;
 }
 
+bool cmpMilliSc(player a, player b) {
+	return (bool)(a.milliSeconds < b.milliSeconds);
+}
+
 void sortScoreboard(vector <player> &topPlayers)
 {
-	//A function that sorts the scoreboard in decreasing order.
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = 0; j < 9; j++)
-		{
-			if (topPlayers[j].milliSeconds > topPlayers[j + 1].milliSeconds)
-			{
-				swapStructs(&topPlayers[j], &topPlayers[j + 1]);
-			}
-		}
-	}
+	sort(topPlayers.begin(), topPlayers.end(), cmpMilliSc);
 }
 
 int checkPlayerScore(struct player mainPlayer, vector <player> &topPlayers)
@@ -140,12 +135,9 @@ int checkPlayerScore(struct player mainPlayer, vector <player> &topPlayers)
 
 void readyScoreboard(vector <player> &topPlayers)
 {
-	//A function that initialises the vector, reads the scoreboard, sorts the scoreboard,
-	// and then writes the scoreboard again to the file.
+	//A function that initialises the vector, reads the scoreboard
 	initialiseVector(topPlayers);
 	readScoreboard(topPlayers);
-	sortScoreboard(topPlayers);
-	writeScoreboard(topPlayers);
 }
 
 
@@ -363,7 +355,6 @@ void clickTile(int height, int width, int y, int x, char operation)
 
 		/*else if (visible[y][x] == 'F')
 		visible[y][x] = '#';
-
 		else if (visible[y][x] == '?')
 		visible[y][x] = '#';*/
 
@@ -417,17 +408,17 @@ char endGame(int height, int width, int numOfMines)
 	for (int i = 1; i <= height; i++)
 		for (int j = 1; j <= width; j++)
 		{
-			if ((grid[i][j] != Mines_Flag && visible[i][j] == '#' ) || (visible[i][j] == 'F' && grid[i][j] != Mines_Flag) )
+			if ((grid[i][j] != Mines_Flag && visible[i][j] == '#') || (visible[i][j] == 'F' && grid[i][j] != Mines_Flag))
 				emptyAreVisible = false;
 		}
 
 
 	cout << "Number of flags placed:" << flagCntr << endl;
 	bool nFlagsCheck = (cntr == numOfMines && flagCntr == numOfMines);
-	if ( nFlagsCheck || emptyAreVisible)
+	if (nFlagsCheck || emptyAreVisible)
 	{
 		cout << "Congratulations, you win!" << endl;
-	//	cout << emptyAreVisible << ' ' << nFlagsCheck << endl;
+		//	cout << emptyAreVisible << ' ' << nFlagsCheck << endl;
 		won = true;
 		return 'W'; // Returns W (for win) if the user puts flags on all of the mines
 	}
@@ -454,6 +445,7 @@ bool getClickedONMine()
 {
 	return clickedOnMine;
 }
+
 bool getWin()
 {
 	return won;
