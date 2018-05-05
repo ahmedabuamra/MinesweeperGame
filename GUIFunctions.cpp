@@ -44,7 +44,8 @@ bool lanched_Level;   // detect if the grid is created
 int Gwidth = 8;   //Global width of the grid 
 int Gheight = 8;  //Global height of the grid 
 int GMinesnum = 10;// Global number of mines
-
+int flgcntr = 0;
+string gameplay_info="";
 bool iswon;      // makes sure win function is called once 
 
 void MainWindowDisplay(float W_width, float W_height, std::string W_name)
@@ -81,11 +82,13 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 									button[i][j]->getRenderer()->setNormalTexture(flag);
 									button[i][j]->getRenderer()->setHoverTexture(flag);
 									endGame(Gheight, Gwidth, GMinesnum);
+									flgcntr++;
 								}
 								else if (my_visible[i + 1][j + 1] == '?')
 								{
 									button[i][j]->getRenderer()->setNormalTexture(QMark);
 									button[i][j]->getRenderer()->setHoverTexture(QMark);
+									flgcntr--;
 								}
 								else
 								{
@@ -97,7 +100,8 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 					}
 
 				}
-			name_time->setText(mainPlayer.name);
+			gameplay_info ="Flags " +std::to_string(flgcntr);
+			name_time->setText(mainPlayer.name+"\n\n"+gameplay_info);
 			}
 
 			if (getWin() && !iswon)
@@ -533,7 +537,7 @@ void FinishedLevel(int width, int height, bool won)
 	txt = tgui::Label::create();
 	txt->setSize(400, 400);
 	txt->setTextSize(72);
-	txt->setPosition(850, 100);
+	txt->setPosition(850, 200);
 	txt->setFont("art/arcadeclassic.TTF");
 	txt->setTextColor("White");
 
@@ -693,8 +697,8 @@ void Name_TimeDisplay()
 	// Add label text for Name and time
     name_time = tgui::Label::create();
 	name_time->setSize(400, 400);
-	name_time->setTextSize(24);
-	name_time->setPosition(900, 10);
+	name_time->setTextSize(15);
+	name_time->setPosition(835, 10);
 	name_time->setTextStyle(sf::Text::Style::Bold);
 	name_time->setTextColor("White");
 	gui.add(name_time);
