@@ -615,14 +615,20 @@ void NameInput()
 void ShowScoreBoard()
 {
 	//A function that prints the scoreboard to the player.
+
 	readyScoreboard(topPlayers);
+
 	// Add label text 
-	tgui::Label::Ptr text;
-	text = tgui::Label::create();
-	text->setSize(windowWidth - 200, windowHeight - 200);
-	text->setTextSize(24);
-	text->setPosition(windowWidth / 6, 10);
-	//text->setFont("art/arcadeclassic.TTF");
+	tgui::Label::Ptr Dtext;
+	Dtext = tgui::Label::create();
+	Dtext->setSize(600, 60);
+	Dtext->setTextStyle(sf::Text::Style::Bold);
+	Dtext->setTextStyle(sf::Text::Style::Underlined);
+	Dtext->setTextSize(24);
+	Dtext->setPosition(windowWidth / 6, 10);
+	Dtext->setText("  Name          Minutes |  Seconds");
+	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
+	gui.add(Dtext);
 	
 
 	int width = 4, width2 = 30;
@@ -630,15 +636,27 @@ void ShowScoreBoard()
 	charline(47, '-', 'N');
 	string s1;
 	string s2;
+	float v = 70;
 	for (int i = 0; i < 10; i++)
 	{
 		if (i == 9) width = 3;
+		// Add label text 
+		tgui::Label::Ptr text[10];
+		text[i] = tgui::Label::create();
+		text[i]->setSize(600, 60);
+		text[i]->setTextColor("Black");
+		text[i]->setTextStyle(sf::Text::Style::Bold);
+		text[i]->setTextSize(24);
+		text[i]->setPosition(windowWidth / 6, v);
+		Menu_Widgets.insert(Menu_Widgets.end(), text[i]);
+		gui.add(text[i]);
 
 		if (topPlayers[i].milliSeconds != genericScoreNum)
 		{
-			 s1 = (i + 1) + " - " + topPlayers[i].name + "        ";
-			 s2 = topPlayers[i].minutes + "        " + topPlayers[i].seconds;
-			 text->setText(s1 + s2 + "\n");
+			 s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "        ";
+			 s2 = topPlayers[i].minutes + "        " + topPlayers[i].seconds;		 
+			 text[i]->setText(s1 + s2 + "\n");
+
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
 				topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
@@ -646,17 +664,19 @@ void ShowScoreBoard()
 
 		else
 		{
-			s1 = (i + 1) + " - " + topPlayers[i].name + "         ";
+			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "         ";
 			s2 = "N/A         N/A";
-			text->setText(s1 + s2 + "\n");
+			text[i]->setText(s1 + s2 + "\n");
+
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
 				"N/A" << "\t\t\t" << "N/A" << endl;
 		}
+		v += 60;
 		
 	}
 	
-	Menu_Widgets.insert(Menu_Widgets.end(), text);
+	
 	Back_Button();
-	gui.add(text);
+	
 }
