@@ -159,6 +159,10 @@ void MainMenu()
 	//The start function for the game 
 	// Displays the MainMenu elements 
 
+	//pre::keep the database
+	readyScoreboard(topPlayers);
+
+
 	// Load Textures from files 
 	bar.load("art/activebar.png");
 	Hbar.load("art/hbar.png");
@@ -666,7 +670,7 @@ void initScoreBoardGUI()
 	for (int i = 0; i < 10; i++)
 	{
 		scoreboardO << topPlayers[i].name <<
-			setw(width - (int)topPlayers[i].name.size()) <<
+			setw(width - (int)topPlayers[i].name.size() - 5) <<
 			topPlayers[i].milliSeconds / 1000 << endl;
 	}
 	scoreboardO.close();
@@ -708,6 +712,7 @@ void ShowScoreBoard()
 		text[i] = tgui::Label::create();
 		text[i]->setSize(1000, 60);
 		text[i]->setTextColor("Black");
+
 		text[i]->setTextStyle(sf::Text::Style::Bold);
 		text[i]->setTextSize(18);
 		text[i]->setPosition(windowWidth / 6, v);
