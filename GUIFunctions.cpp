@@ -611,7 +611,6 @@ void NameInput()
 
 	Back_Button();
 }
-
 void ShowScoreBoard()
 {
 	//A function that prints the scoreboard to the player.
@@ -626,7 +625,7 @@ void ShowScoreBoard()
 	Dtext->setTextStyle(sf::Text::Style::Underlined);
 	Dtext->setTextSize(24);
 	Dtext->setPosition(windowWidth / 6, 10);
-	Dtext->setText("  Name          Minutes |  Seconds");
+	Dtext->setText("  Name                                       Minutes |  Seconds");
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
 	
@@ -643,19 +642,19 @@ void ShowScoreBoard()
 		// Add label text 
 		tgui::Label::Ptr text[10];
 		text[i] = tgui::Label::create();
-		text[i]->setSize(600, 60);
+		text[i]->setSize(1000, 60);
 		text[i]->setTextColor("Black");
 		text[i]->setTextStyle(sf::Text::Style::Bold);
-		text[i]->setTextSize(24);
+		text[i]->setTextSize(18);
 		text[i]->setPosition(windowWidth / 6, v);
 		Menu_Widgets.insert(Menu_Widgets.end(), text[i]);
 		gui.add(text[i]);
 
 		if (topPlayers[i].milliSeconds != genericScoreNum)
 		{
-			 s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "        ";
-			 s2 = topPlayers[i].minutes + "        " + topPlayers[i].seconds;		 
-			 text[i]->setText(s1 + s2 + "\n");
+			 s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                       ";
+			 s2 = std::to_string(topPlayers[i].minutes) + "        " + std::to_string(topPlayers[i].seconds);
+			 text[i]->setText(s1 + s2 );
 
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
@@ -664,9 +663,9 @@ void ShowScoreBoard()
 
 		else
 		{
-			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "         ";
+			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                        ";
 			s2 = "N/A         N/A";
-			text[i]->setText(s1 + s2 + "\n");
+			text[i]->setText(s1 + s2 );
 
 			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
 				setw(width2 - topPlayers[i].name.size()) <<
