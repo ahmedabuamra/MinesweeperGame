@@ -4,24 +4,26 @@
 Global vars
 */
 
-// Create Window and gui
+// Create Window and gui 
 sf::RenderWindow* window;
 tgui::Gui gui;
 
 auto theme = tgui::Theme::create("widgets/Black.txt");
-auto windowWidth = tgui::bindWidth(gui);     // width of the window
+auto windowWidth = tgui::bindWidth(gui);     // width of the window 
 auto windowHeight = tgui::bindHeight(gui);   // height of the window
 std::vector<tgui::Widget::Ptr> Menu_Widgets; // Storing all created Gui widgets
 											 // Input Boxes
 tgui::EditBox::Ptr E_height;
 tgui::EditBox::Ptr E_width;
 tgui::EditBox::Ptr E_numOfmines;
-
 // Sounds
 sf::SoundBuffer buffer;
 sf::Music music;
 sf::Sound sound;
 set < pair<int, int> > minesCoordinates;
+
+// Grid Buttons
+tgui::Button::Ptr **button;
 
 // Textures
 tgui::Texture bar, Hbar, Cbar;
@@ -30,13 +32,14 @@ tgui::Texture tilenums[9];
 tgui::Texture mine, Emine, flag, QMark;
 
 char my_visible[50][50];
-bool rc;   // detect if the grid is created
-int Gwidth = 8;   //Global width of the grid
-int Gheight = 8;  //Global height of the grid
+bool rc;   // detect if the grid is created 
+int Gwidth = 8;   //Global width of the grid 
+int Gheight = 8;  //Global height of the grid 
+int GMinesnum = 10;// Global number of mines
 
 
 
-void MainWindowDisplay(float W_width, float W_height, std::string W_name, tgui::Button::Ptr **gridButtons)
+void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 {
 	//Function that displays the window and detects GUI events
 
@@ -51,42 +54,47 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name, tgui::
 		{
 			if (event.type == sf::Event::Closed)
 				window->close();
-			// Loop to add flag or Qmark (?) when right clicked
-			for (int i = 0; i < Gheight && gridButtons != NULL ; i++)
+
+			// Loop to add flag or Qmark (?) when right clicked 
+			for (int i = 0; i < Gheight; i++)
 			{
 				for (int j = 0; j < Gwidth; j++)
 				{
 					if (rc)
 					{
-						if (gridButtons[i][j]->mouseOnWidget(event.mouseButton.x, event.mouseButton.y))
+						if (button[i][j]->mouseOnWidget(event.mouseButton.x, event.mouseButton.y) && button[i][j]->isEnabled())
 						{
 							if (event.type == sf::Event::MouseButtonPressed&&event.mouseButton.button == sf::Mouse::Right)
 							{
 								clickTile(Gheight, Gwidth, i, j, 'F');
-								getVisible(my_visible);
+								getVisiable(my_visible);
 								if (my_visible[i + 1][j + 1] == 'F')
 								{
-									gridButtons[i][j]->getRenderer()->setNormalTexture(flag);
-									gridButtons[i][j]->getRenderer()->setHoverTexture(flag);
+									button[i][j]->getRenderer()->setNormalTexture(flag);
+									button[i][j]->getRenderer()->setHoverTexture(flag);
+									endGame(Gheight, Gwidth, GMinesnum);
 								}
 								else if (my_visible[i + 1][j + 1] == '?')
 								{
-									gridButtons[i][j]->getRenderer()->setNormalTexture(QMark);
-									gridButtons[i][j]->getRenderer()->setHoverTexture(QMark);
+									button[i][j]->getRenderer()->setNormalTexture(QMark);
+									button[i][j]->getRenderer()->setHoverTexture(QMark);
 								}
 								else
 								{
-									gridButtons[i][j]->getRenderer()->setNormalTexture(tile);
-									gridButtons[i][j]->getRenderer()->setHoverTexture(Htile);
+									button[i][j]->getRenderer()->setNormalTexture(tile);
+									button[i][j]->getRenderer()->setHoverTexture(Htile);
 								}
 							}
 						}
 					}
-					if (getWin())
-					{
-						FinishedLevel(Gwidth, Gheight, true, gridButtons);
-					}
+
 				}
+			}
+
+			if (getWin())
+			{
+				FinishedLevel(Gwidth, Gheight, true);
+
 			}
 
 			gui.handleEvent(event); // Pass the event to the widgets
@@ -100,10 +108,10 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name, tgui::
 
 void SoundPlay(string type, string path, bool isLoop)
 {
-	// Function that plays sound based on :
-	// type : music or sound
-	// path : the path for the sound file
-	// Loop the sound or play it once
+	// Function that plays sound based on : 
+	// type : music or sound 
+	// path : the path for the sound file 
+	// Loop the sound or play it once 
 
 	if (type == "Sound" || type == "sound")
 	{
@@ -128,10 +136,10 @@ void SoundPlay(string type, string path, bool isLoop)
 
 void MainMenu()
 {
-	//The start function for the game
-	// Displays the MainMenu elements
+	//The start function for the game 
+	// Displays the MainMenu elements 
 
-	// Load Textures from files
+	// Load Textures from files 
 	bar.load("art/activebar.png");
 	Hbar.load("art/hbar.png");
 	Cbar.load("art/closedbar.png");
@@ -176,13 +184,14 @@ void MainMenu()
 	c->getRenderer()->setForegroundColor("Yellow");
 	c->setText("Music");
 	c->setFont("art/arcadeclassic.TTF");
-	c->check();
+	if (music.getStatus() == music.Stopped)            c->uncheck();
+	else if (music.getStatus() == music.Playing)         c->check();
 	c->connect("checked", [&]() { music.play(); });
 	c->connect("unchecked", [&]() { music.stop(); });
 	Menu_Widgets.insert(Menu_Widgets.end(), c);
 	gui.add(c);
 
-	// Add buttons
+	// Add buttons 
 	tgui::Button::Ptr M_buttons[4];
 	string txts[4] = { "NewGame","ScoreBoard","Creidts","Exit" };
 	float v = 530;
@@ -214,7 +223,7 @@ void MainMenu()
 
 void LevelMenu()
 {
-	//Function that displays difficulty choices
+	//Function that displays difficulty choices 
 
 	//Add Logo
 	tgui::Picture::Ptr logo = tgui::Picture::create("art/logo.png");
@@ -223,7 +232,7 @@ void LevelMenu()
 	Menu_Widgets.insert(Menu_Widgets.end(), logo);
 	gui.add(logo);
 
-	//Add difficulty Buttons
+	//Add difficulty Buttons 
 	tgui::Button::Ptr button[5];
 	//Start position for buttons
 	float s = 760;
@@ -290,7 +299,7 @@ void Level_Select(int level)
 		int width = 0;
 		int height = 0;
 		int numOfmines = 0;
-		//Taking inputBoxes string and adding it to int
+		//Taking inputBoxes string and adding it to int 
 		std::stringstream inp_width(E_width->getText().toAnsiString());
 		std::stringstream inp_height(E_height->getText().toAnsiString());
 		std::stringstream inp_numOfmines(E_numOfmines->getText().toAnsiString());
@@ -305,45 +314,47 @@ void Level_Select(int level)
 
 void Launch_Level(int width, int height, int numOfmines)
 {
-	//Function that starts the Level and displays the grid tiles
+	//Function that starts the Level and displays the grid tiles 
 
 	initVisibleToHash(height, width);
 	randomiseMineCoordinates(minesCoordinates, numOfmines, height, width);
 	placeMines(minesCoordinates);
 	setValuesForGrid(height, width);
-	getVisible(my_visible);
+
+
 
 	float v = 0;
 	float H = 0;
-	tgui::Button::Ptr** gridButtons = new tgui::Button::Ptr*[height];
+	button = new tgui::Button::Ptr*[height];
 	for (int i = 0; i < height; i++)
 	{
-		gridButtons[i] = new tgui::Button::Ptr[width];
+		button[i] = new tgui::Button::Ptr[width];
 	}
 
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			gridButtons[i][j] = tgui::Button::create();
-			gridButtons[i][j]->getRenderer()->setNormalTexture(tile);
-			gridButtons[i][j]->getRenderer()->setHoverTexture(Htile);
-			gridButtons[i][j]->getRenderer()->setDownTexture(Ctile);
-			gridButtons[i][j]->setSize((windowWidth - 200) / (width), (windowHeight) / (height));
-			gridButtons[i][j]->setPosition(windowWidth - windowWidth + H, windowHeight - windowHeight + v);
-			gridButtons[i][j]->connect("pressed", SoundPlay, "sound", "sounds/click.flac", false);
-			gridButtons[i][j]->connect("pressed", Store, i, j, width, height, 'O', gridButtons);
-			gridButtons[i][j]->showWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(800));
-			gui.add(gridButtons[i][j]);
-			Menu_Widgets.insert(Menu_Widgets.end(), gridButtons[i][j]);
+			button[i][j] = tgui::Button::create();
+			button[i][j]->getRenderer()->setNormalTexture(tile);
+			button[i][j]->getRenderer()->setHoverTexture(Htile);
+			button[i][j]->getRenderer()->setDownTexture(Ctile);
+			button[i][j]->setSize((windowWidth - 200) / (width), (windowHeight) / (height));
+			button[i][j]->setPosition(windowWidth - windowWidth + H, windowHeight - windowHeight + v);
+			button[i][j]->connect("pressed", SoundPlay, "sound", "sounds/click.flac", false);
+			button[i][j]->connect("pressed", Store, i, j, width, height, 'O');
+			button[i][j]->connect("pressed", endGame, height, width, numOfmines);
+			button[i][j]->showWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(800));
+			gui.add(button[i][j]);
+			Menu_Widgets.insert(Menu_Widgets.end(), button[i][j]);
 			H += 824 / width;
 		}
 		v += 768 / height;
 		H = 0;
 	}
-
 	Gwidth = width;
 	Gheight = height;
+	GMinesnum = numOfmines;
 	rc = true;
 	Back_Button();
 }
@@ -368,7 +379,7 @@ void CustomLevel()
 	E_height->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(800));
 	gui.add(E_height);
 	Menu_Widgets.insert(Menu_Widgets.end(), E_height);
-	//Add inputbox for numOfmines
+	//Add inputbox for numOfmines 
 	E_numOfmines = theme->load("EditBox");
 	E_numOfmines->setSize(windowWidth / 5, windowHeight / 12);
 	E_numOfmines->setPosition((windowWidth / 8) * 5, windowHeight / 6);
@@ -384,6 +395,7 @@ void CustomLevel()
 	b->getRenderer()->setDownTexture(Cbar);
 	b->setSize(windowWidth / 2, windowHeight / 6);
 	b->setText("Enter");
+	b->setTextSize(54);
 	b->setFont("art/arcadeclassic.TTF");
 	b->setPosition(windowWidth / 4.5, windowHeight / 6 + windowHeight / 6);
 	Menu_Widgets.insert(Menu_Widgets.end(), b);
@@ -406,6 +418,7 @@ void DisableWidgets()
 		gui.remove(Menu_Widgets[i]);
 	}
 	Menu_Widgets.clear();
+
 }
 
 void Back_Button()
@@ -428,12 +441,12 @@ void Back_Button()
 }
 
 
-void Store(int i, int j, int width, int height, char operation, tgui::Button::Ptr** gridButtons)
+void Store(int i, int j, int width, int height, char operation)
 {
 	//Function that displays the grid to the tiles buttons
 
 	clickTile(height, width, i, j, operation);
-	getVisible(my_visible);
+	getVisiable(my_visible);
 	for (int k = 0; k < height; k++)
 	{
 		for (int l = 0; l < width; l++)
@@ -442,28 +455,26 @@ void Store(int i, int j, int width, int height, char operation, tgui::Button::Pt
 			{
 				if (my_visible[k + 1][l + 1] != '@'&&my_visible[k + 1][l + 1] != '+'&&my_visible[k + 1][l + 1] != 'F')
 				{
-					gridButtons[k][l]->getRenderer()->setNormalTexture(tilenums[my_visible[k + 1][l + 1] - '0']);
-					gridButtons[k][l]->disable();
+					button[k][l]->getRenderer()->setNormalTexture(tilenums[my_visible[k + 1][l + 1] - '0']);
+					button[k][l]->disable();
 				}
-
 				else if (my_visible[k + 1][l + 1] == '@')
 				{
-					gridButtons[k][l]->getRenderer()->setNormalTexture(Emine);
+					button[k][l]->getRenderer()->setNormalTexture(Emine);
 					SoundPlay("sound", "sounds/explode.flac", false);
-					FinishedLevel(width, height, false, gridButtons);
+					FinishedLevel(width, height, false);
 				}
-
 				else if (my_visible[k + 1][l + 1] == '+')
 				{
-					gridButtons[k][l]->getRenderer()->setNormalTexture(mine);
-					gridButtons[k][l]->disable();
+					button[k][l]->getRenderer()->setNormalTexture(mine);
+					button[k][l]->disable();
 				}
 
 			}
 			else if (my_visible[k + 1][l + 1] == '#')
 			{
-				gridButtons[k][l]->getRenderer()->setNormalTexture(tile);
-				gridButtons[k][l]->getRenderer()->setHoverTexture(Htile);
+				button[k][l]->getRenderer()->setNormalTexture(tile);
+				button[k][l]->getRenderer()->setHoverTexture(Htile);
 
 			}
 
@@ -471,9 +482,9 @@ void Store(int i, int j, int width, int height, char operation, tgui::Button::Pt
 	}
 }
 
-void FinishedLevel(int width, int height, bool won, tgui::Button::Ptr** gridButtons)
+void FinishedLevel(int width, int height, bool won)
 {
-	//Function that detects and displays Losing and wining
+	//Function that detects and displays Losing and wining 
 
 	tgui::Label::Ptr txt;
 	tgui::Button::Ptr again;
@@ -494,7 +505,7 @@ void FinishedLevel(int width, int height, bool won, tgui::Button::Ptr** gridButt
 	Menu_Widgets.insert(Menu_Widgets.end(), txt);
 	gui.add(txt);
 
-	// Add PlayAgain Button
+	// Add PlayAgain Button 
 	again = tgui::Button::create();
 	again->getRenderer()->setNormalTexture(bar);
 	again->getRenderer()->setHoverTexture(Hbar);
@@ -514,18 +525,18 @@ void FinishedLevel(int width, int height, bool won, tgui::Button::Ptr** gridButt
 	{
 		for (int j = 0; j < width; j++)
 		{
-			gridButtons[i][j]->disable();
+			button[i][j]->disable();
 		}
 	}
 }
 
 void Credits()
 {
-	// Add label text
+	// Add label text 
 	tgui::Label::Ptr text;
 	text = tgui::Label::create();
 	text->setSize(windowWidth - 200, windowHeight - 200);
-	text->setTextSize(40);
+	text->setTextSize(48);
 	text->setPosition(windowWidth / 6, 10);
 	text->setFont("art/arcadeclassic.TTF");
 	text->setText("Backend  Development  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n \n GUI   and   Art \n Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
