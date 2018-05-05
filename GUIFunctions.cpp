@@ -60,7 +60,8 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name,sf::Sty
 		{
 			if (event.type == sf::Event::Closed)
 				window->close();
-
+			if (rc)
+		    {
 			// Loop to add flag or Qmark (?) when right clicked 
 			for (int i = 0; i < Gheight; i++)
 			{
