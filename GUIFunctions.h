@@ -16,3 +16,5 @@ void SoundPlay(string type, string path, bool isLoop);
 void Store(int i, int j, int width, int height, char operation);
 void FinishedLevel(int width, int height, bool won);
 void Credits();
+void NameInput();
+void ShowScoreBoard();
