@@ -553,10 +553,13 @@ void FinishedLevel(int width, int height, bool won)
 	again->setPosition(windowWidth - windowWidth / 6, windowHeight - windowHeight / 4);
 	Menu_Widgets.insert(Menu_Widgets.end(), again);
 	again->connect("pressed", SoundPlay, "sound", "sounds/click.flac", false);
+	again->connect("pressed", [&]() { music.play(); });
 	again->connect("pressed", DisableWidgets);
 	again->connect("pressed", LevelMenu);
 	gui.add(again);
 
+	music.pause();
+	
 	// Disable pressing for the remaining grid tiles
 	for (int i = 0; i < height; i++)
 	{
