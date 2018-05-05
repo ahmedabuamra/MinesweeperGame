@@ -76,7 +76,7 @@ void showMinesIfLost(int height, int width);
 void printVisible(int height, int width);
 void openTiles(int y, int x, int height, int width);
 void clickTile(int height, int width, int y, int x, char operation);
-void getVisiable(char arr[50][50]);
+void getVisible(char arr[50][50]);
 char endGame(int height, int width, int numOfMines);
 void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers);
 bool getClickedONMine();

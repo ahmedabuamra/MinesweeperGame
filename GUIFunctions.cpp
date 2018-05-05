@@ -73,7 +73,7 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 							if (event.type == sf::Event::MouseButtonPressed&&event.mouseButton.button == sf::Mouse::Right)
 							{
 								clickTile(Gheight, Gwidth, i, j, 'F');
-								getVisiable(my_visible);
+								getVisible(my_visible);
 								if (my_visible[i + 1][j + 1] == 'F')
 								{
 									button[i][j]->getRenderer()->setNormalTexture(flag);
@@ -476,7 +476,7 @@ void Store(int i, int j, int width, int height, char operation)
 	//Function that displays the grid to the tiles buttons
 
 	clickTile(height, width, i, j, operation);
-	getVisiable(my_visible);
+	getVisible(my_visible);
 	for (int k = 0; k < height; k++)
 	{
 		for (int l = 0; l < width; l++)

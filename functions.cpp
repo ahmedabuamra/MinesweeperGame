@@ -417,15 +417,17 @@ char endGame(int height, int width, int numOfMines)
 	for (int i = 1; i <= height; i++)
 		for (int j = 1; j <= width; j++)
 		{
-			if ((grid[i][j] != Mines_Flag && visible[i][j] == '#' ) && visible[i][j] != 'F' )
+			if ((grid[i][j] != Mines_Flag && visible[i][j] == '#' ) || (visible[i][j] == 'F' && grid[i][j] != Mines_Flag) )
 				emptyAreVisible = false;
 		}
 
 
 	cout << "Number of flags placed:" << flagCntr << endl;
-	if ((cntr == numOfMines && flagCntr == numOfMines) || emptyAreVisible)
+	bool nFlagsCheck = (cntr == numOfMines && flagCntr == numOfMines);
+	if ( nFlagsCheck || emptyAreVisible)
 	{
 		cout << "Congratulations, you win!" << endl;
+	//	cout << emptyAreVisible << ' ' << nFlagsCheck << endl;
 		won = true;
 		return 'W'; // Returns W (for win) if the user puts flags on all of the mines
 	}
@@ -441,7 +443,7 @@ char endGame(int height, int width, int numOfMines)
 
 }
 
-void getVisiable(char arr[50][50])
+void getVisible(char arr[50][50])
 {
 	for (int i = 0; i < 50; i++)
 		for (int j = 0; j < 50; j++)
