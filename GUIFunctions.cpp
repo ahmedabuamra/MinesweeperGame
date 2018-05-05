@@ -431,7 +431,7 @@ void CustomLevel()
 	E_width->getRenderer()->setNormalTexture(textbox);
 	E_width->setSize(windowWidth / 5, windowHeight / 12);
 	E_width->setPosition(windowWidth / 8, windowHeight / 6);
-	E_width->setDefaultText("width");
+	E_width->setDefaultText("Width");
 	E_width->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(800));
 	gui.add(E_width);
 	Menu_Widgets.insert(Menu_Widgets.end(), E_width);
@@ -449,7 +449,7 @@ void CustomLevel()
 	E_numOfmines->getRenderer()->setNormalTexture(textbox);
 	E_numOfmines->setSize(windowWidth / 5, windowHeight / 12);
 	E_numOfmines->setPosition((windowWidth / 8) * 5, windowHeight / 6);
-	E_numOfmines->setDefaultText("mines");
+	E_numOfmines->setDefaultText("Mines");
 	E_numOfmines->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(800));
 	gui.add(E_numOfmines);
 	Menu_Widgets.insert(Menu_Widgets.end(), E_numOfmines);
