@@ -13,6 +13,7 @@ https://tgui.eu/									*
 */
 
 #include"GUIFunctions.h"
+#include"functions.h"
 
 int main()
 {
@@ -26,7 +27,6 @@ int main()
 		cout << "Failed to load TGUI widgets: " << e.what() << endl;
 		return 1;
 	}
-	MainWindowDisplay(1024, 768, "Minesweeper", NULL);
-	system("pause");
+	MainWindowDisplay(1024, 768, "Minesweeper");
 	return 0;
 }
