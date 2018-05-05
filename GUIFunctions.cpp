@@ -100,8 +100,8 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 					}
 
 				}
-			gameplay_info ="Flags " +std::to_string(flgcntr);
-			name_time->setText(mainPlayer.name+"\n\n"+gameplay_info);
+			gameplay_info ="          "+std::to_string(flgcntr);
+			name_time->setText(mainPlayer.name+"\n\n\n"+gameplay_info);
 			}
 
 			if (getWin() && !iswon)
@@ -359,7 +359,7 @@ void Launch_Level(int width, int height, int numOfmines)
 	placeMines(minesCoordinates);
 	setValuesForGrid(height, width);
 	iswon = false;
-
+	flgcntr = 0;
 
 	float v = 0;
 	float H = 0;
@@ -701,5 +701,12 @@ void Name_TimeDisplay()
 	name_time->setPosition(835, 10);
 	name_time->setTextStyle(sf::Text::Style::Bold);
 	name_time->setTextColor("White");
+	Menu_Widgets.insert(Menu_Widgets.end(), name_time);
 	gui.add(name_time);
+
+	tgui::Picture::Ptr flg = tgui::Picture::create(flag);
+	flg->setSize(40, 40);
+	flg->setPosition(830, 50);
+	Menu_Widgets.insert(Menu_Widgets.end(), flg);
+	gui.add(flg);
 }
