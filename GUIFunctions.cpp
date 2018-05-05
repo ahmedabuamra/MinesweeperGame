@@ -12,7 +12,7 @@ auto theme = tgui::Theme::create("art/Black.txt");
 auto windowWidth = tgui::bindWidth(gui);     // width of the window 
 auto windowHeight = tgui::bindHeight(gui);   // height of the window
 std::vector<tgui::Widget::Ptr> Menu_Widgets; // Storing all created Gui widgets
-// Input Boxes
+											 // Input Boxes
 tgui::EditBox::Ptr E_height;
 tgui::EditBox::Ptr E_width;
 tgui::EditBox::Ptr E_numOfmines;
@@ -37,7 +37,7 @@ tgui::Texture Enter_Button, HEnter_Button;
 tgui::Texture textbox;
 char my_visible[50][50];
 
-vector <player> topPlayers; // Vector to hold the top players.
+vector <player> topPlayers(20); // Vector to hold the top players.
 player mainPlayer = {}; //Struct to hold the data for the player.
 
 bool lanched_Level;   // detect if the grid is created 
@@ -45,14 +45,20 @@ int Gwidth = 8;   //Global width of the grid
 int Gheight = 8;  //Global height of the grid 
 int GMinesnum = 10;// Global number of mines
 int flgcntr = 0;
-string gameplay_info="";
+string gameplay_info = "";
 bool iswon;      // makes sure win function is called once 
+
+
+//time calc.
+steady_clock::time_point clock_begin, clock_end;
+steady_clock::duration time_span;
+
 
 void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 {
 	//Function that displays the window and detects GUI events
 
-	window = new sf::RenderWindow(sf::VideoMode(W_width, W_height), W_name,sf::Style::Titlebar|sf::Style::Close);
+	window = new sf::RenderWindow(sf::VideoMode(W_width, W_height), W_name, sf::Style::Titlebar | sf::Style::Close);
 
 	gui.setWindow(*window); // Create the gui and attach it to the window.
 							// main loop
@@ -65,12 +71,12 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 				window->close();
 			if (lanched_Level)
 			{
-			// Loop to add flag or Qmark (?) when right clicked 
-			for (int i = 0; i < Gheight; i++)
-			{
-				for (int j = 0; j < Gwidth; j++)
+				// Loop to add flag or Qmark (?) when right clicked 
+				for (int i = 0; i < Gheight; i++)
 				{
-					
+					for (int j = 0; j < Gwidth; j++)
+					{
+
 						if (button[i][j]->mouseOnWidget(event.mouseButton.x, event.mouseButton.y) && button[i][j]->isEnabled())
 						{
 							if (event.type == sf::Event::MouseButtonPressed&&event.mouseButton.button == sf::Mouse::Right)
@@ -100,8 +106,8 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 					}
 
 				}
-			gameplay_info ="          "+std::to_string(flgcntr);
-			name_time->setText(mainPlayer.name+"\n\n\n"+gameplay_info);
+				gameplay_info = "          " + std::to_string(flgcntr);
+				name_time->setText(mainPlayer.name + "\n\n\n" + gameplay_info);
 			}
 
 			if (getWin() && !iswon)
@@ -360,6 +366,7 @@ void Launch_Level(int width, int height, int numOfmines)
 	setValuesForGrid(height, width);
 	iswon = false;
 	flgcntr = 0;
+	clock_begin = steady_clock::now(); //record the start time
 
 	float v = 0;
 	float H = 0;
@@ -541,10 +548,30 @@ void FinishedLevel(int width, int height, bool won)
 	txt->setFont("art/arcadeclassic.TTF");
 	txt->setTextColor("White");
 
+	//End Time & duration
+	clock_end = steady_clock::now();
+
 	if (won)
+	{
 		txt->setText("You \n \n Win!");
+		auto tMilliseconds = duration_cast <milliseconds> (clock_end - clock_begin).count(); //Counting milliseconds
+
+		//Calculating Minutes and Seconds.
+		long long  tSeconds = tMilliseconds / 1000;
+		long long  tMinutes = tSeconds / 60;
+		tSeconds %= 60;
+
+		//Assigning the values to the player's info in the struct.
+		mainPlayer.milliSeconds = tMilliseconds;
+		mainPlayer.minutes = tMinutes;
+		mainPlayer.seconds = tSeconds;
+		topPlayers.push_back(mainPlayer);
+		writeScoreboard(topPlayers);
+	}
 	else
+	{
 		txt->setText("You \n \n Lose!");
+	}
 
 	Menu_Widgets.insert(Menu_Widgets.end(), txt);
 	gui.add(txt);
@@ -567,7 +594,7 @@ void FinishedLevel(int width, int height, bool won)
 	gui.add(again);
 
 	music.pause();
-	
+
 
 	// Disable pressing for the remaining grid tiles
 	for (int i = 0; i < height; i++)
@@ -589,7 +616,7 @@ void Credits()
 	text->setPosition(windowWidth / 6, 10);
 	text->setFont("art/arcadeclassic.TTF");
 	text->setText("Backend  Development  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n \n GUI   and   Art \n Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
-	);
+		);
 
 	Menu_Widgets.insert(Menu_Widgets.end(), text);
 	Back_Button();
@@ -623,6 +650,20 @@ void NameInput()
 
 	Back_Button();
 }
+
+void initScoreBoardGUI() {
+	ofstream scoreboardI;
+	scoreboardI.open("scoreboardGUI.scrb");
+	for (int i = 0; i < 10; i++)
+	{
+		if (topPlayers[i].milliSeconds != genericScoreNum)
+			scoreboardI << topPlayers[i].name << setw(70) << topPlayers[i].milliSeconds / 1000 << endl;
+		else
+			scoreboardI << topPlayers[i].name << setw(70) << "N/A" << endl;
+	}
+	scoreboardI.close();
+}
+
 void ShowScoreBoard()
 {
 	//A function that prints the scoreboard to the player.
@@ -637,21 +678,23 @@ void ShowScoreBoard()
 	Dtext->setTextStyle(sf::Text::Style::Underlined);
 	Dtext->setTextSize(24);
 	Dtext->setPosition(windowWidth / 6, 10);
-	Dtext->setText("  Name                                       Minutes |  Seconds");
+	Dtext->setText("  Name                                                                 Score");
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
 
 
 	int width = 4, width2 = 30;
-	cout << "\t\t" << "Name" << setw(27) << "Minutes |" << "\t" << "Seconds" << endl;
-	charline(47, '-', 'N');
-	string s1;
-	string s2;
+	//open scoreboard file
+	initScoreBoardGUI();
+	ifstream scoreboardI;
+	scoreboardI.open("scoreboardGUI.scrb");
 	float v = 70;
 	for (int i = 0; i < 10; i++)
 	{
 		if (i == 9) width = 3;
-		// Add label text 
+		// Add label text m
+		string playerData;
+		getline(scoreboardI, playerData);
 		tgui::Label::Ptr text[10];
 		text[i] = tgui::Label::create();
 		text[i]->setSize(1000, 60);
@@ -661,41 +704,17 @@ void ShowScoreBoard()
 		text[i]->setPosition(windowWidth / 6, v);
 		Menu_Widgets.insert(Menu_Widgets.end(), text[i]);
 		gui.add(text[i]);
-
-		if (topPlayers[i].milliSeconds != genericScoreNum)
-		{
-			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                       ";
-			s2 = std::to_string(topPlayers[i].minutes) + "        " + std::to_string(topPlayers[i].seconds);
-			text[i]->setText(s1 + s2);
-
-			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-				setw(width2 - topPlayers[i].name.size()) <<
-				topPlayers[i].minutes << "\t\t\t" << topPlayers[i].seconds << endl;
-		}
-
-		else
-		{
-			s1 = std::to_string(i + 1) + " - " + topPlayers[i].name + "                                        ";
-			s2 = "N/A         N/A";
-			text[i]->setText(s1 + s2);
-
-			cout << i + 1 << setw(width) << " - " << topPlayers[i].name <<
-				setw(width2 - topPlayers[i].name.size()) <<
-				"N/A" << "\t\t\t" << "N/A" << endl;
-		}
+		text[i]->setText(playerData);
 		v += 60;
-
 	}
-
-
+	scoreboardI.close();
 	Back_Button();
-
 }
 
 void Name_TimeDisplay()
 {
 	// Add label text for Name and time
-    name_time = tgui::Label::create();
+	name_time = tgui::Label::create();
 	name_time->setSize(400, 400);
 	name_time->setTextSize(15);
 	name_time->setPosition(835, 10);
