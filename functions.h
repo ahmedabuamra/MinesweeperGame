@@ -59,6 +59,7 @@ void readScoreboard(vector <player> &topPlayers);
 void printScoreboard(vector <player> &topPlayers);
 void writeScoreboard(vector <player> &topPlayers);
 void swapStructs(struct player* first, struct player* second);
+bool cmpMilliSc(player a, player b);
 void sortScoreboard(vector <player> &topPlayers);
 int checkPlayerScore(struct player mainPlayer, vector <player> &topPlayers);
 void readyScoreboard(vector <player> &topPlayers);
@@ -68,7 +69,7 @@ void initVisibleToHash(int height, int width);
 void chooseDifficulty(char c, int &height, int &width, int &numOfMines);
 void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &topPlayers, struct player &mainPlayer);
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-int numOfMines, int height, int width);
+	int numOfMines, int height, int width);
 void setValueForTile(int r, int c);
 void setValuesForGrid(int height, int width);
 void placeMines(set < pair<int, int> > &minesCoordinates);
