@@ -45,7 +45,7 @@ int GMinesnum = 10;// Global number of mines
 
 bool iswon;      // makes sure win function is called once 
 
-void MainWindowDisplay(float W_width, float W_height, std::string W_name)
+void MainWindowDisplay(float W_width, float W_height, std::string W_name,sf::Style::Titlebar|sf::Style::Close)
 {
 	//Function that displays the window and detects GUI events
 
