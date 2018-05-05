@@ -30,7 +30,7 @@ tgui::Button::Ptr **button;
 tgui::Texture bar, Hbar, Cbar;
 tgui::Texture tile, Htile, Ctile;
 tgui::Texture tilenums[9];
-tgui::Texture mine, Emine, flag, QMark;
+tgui::Texture mine, Emine,flaggedMine, flag, QMark;
 tgui::Texture Enter_Button,HEnter_Button;
 tgui::Texture textbox;
 char my_visible[50][50];
@@ -162,6 +162,7 @@ void MainMenu()
 	}
 	mine.load("art/mine.png");
 	Emine.load("art/explodedmine.png");
+	flaggedMine.load("art/xmine.png");
 	flag.load("art/flag.png");
 	QMark.load("art/qmark.png");
 	textbox.load("art/mainmenuitems/textbox.png");
@@ -482,7 +483,7 @@ void Store(int i, int j, int width, int height, char operation)
 		{
 			if (my_visible[k + 1][l + 1] != '#')
 			{
-				if (my_visible[k + 1][l + 1] != '@'&&my_visible[k + 1][l + 1] != '+'&&my_visible[k + 1][l + 1] != 'F')
+				if (my_visible[k + 1][l + 1] != '@'&&my_visible[k + 1][l + 1] != '+'&&my_visible[k + 1][l + 1] != 'F'&&my_visible[k + 1][l + 1] != '%')
 				{
 					button[k][l]->getRenderer()->setNormalTexture(tilenums[my_visible[k + 1][l + 1] - '0']);
 					button[k][l]->disable();
@@ -496,6 +497,11 @@ void Store(int i, int j, int width, int height, char operation)
 				else if (my_visible[k + 1][l + 1] == '+')
 				{
 					button[k][l]->getRenderer()->setNormalTexture(mine);
+					button[k][l]->disable();
+				}
+				else if (my_visible[k + 1][l + 1] == '%')
+				{
+					button[k][l]->getRenderer()->setNormalTexture(flaggedMine);
 					button[k][l]->disable();
 				}
 
