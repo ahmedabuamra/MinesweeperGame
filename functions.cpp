@@ -104,7 +104,8 @@ void swapStructs(struct player* first, struct player* second)
 	*second = temp;
 }
 
-bool cmpMilliSc(player a, player b) {
+bool cmpMilliSc(player a, player b) 
+{
 	return (bool)(a.milliSeconds < b.milliSeconds);
 }
 
@@ -138,6 +139,7 @@ void readyScoreboard(vector <player> &topPlayers)
 	//A function that initialises the vector, reads the scoreboard
 	initialiseVector(topPlayers);
 	readScoreboard(topPlayers);
+	writeScoreboard(topPlayers);
 }
 
 
