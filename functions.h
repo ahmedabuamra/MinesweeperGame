@@ -1,6 +1,7 @@
 #ifndef MINESWEEPER_FUNCTIONS_H
 #define MINESWEEPER_FUNCTIONS_H
 
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -9,7 +10,7 @@
 #include <cstring>
 #include <iomanip>
 #include <chrono> //Includes the time related functions implemented in C++11
-#include <string>
+
 #define endl '\n'
 #define Mines_Flag 9 //This flag is set to 9 as it is impossible for one tile to have more than 8 mines in its adjacent tiles.
 #define genericScoreNum 999999999999999
@@ -47,7 +48,7 @@ struct player
 };
 
 
-/***Check the function definitions in the functions.cpp file to see the explanation for what each function does***/
+//Check the function definitions in the functions.cpp file to see the explanation for what each function does
 
 
 void charline(int x, char c, char spaces);
@@ -75,9 +76,12 @@ void showMinesIfLost(int height, int width);
 void printVisible(int height, int width);
 void openTiles(int y, int x, int height, int width);
 void clickTile(int height, int width, int y, int x, char operation);
+void getVisiable(char arr[50][50]);
 char endGame(int height, int width, int numOfMines);
 void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers);
+bool getClickedONMine();
 bool getWin();
-void getVisible(char ar[50][50]);
+
+
 
 #endif //MINESWEEPER_FUNCTIONS_H
