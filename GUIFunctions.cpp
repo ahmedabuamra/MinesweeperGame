@@ -65,7 +65,7 @@ void MainWindowDisplay(float W_width, float W_height, std::string W_name)
 							// main loop
 	while (window->isOpen())
 	{
-		if (lanched_Level)
+		if (lanched_Level&&!getWin()&&!getClickedONMine())
 		{
 			//side part of level
 			auto clock_end = steady_clock::now();
