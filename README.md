@@ -20,7 +20,7 @@ The game uses a retrowave theme to deliver classic nostalgic vibes to the player
 Your objective is to clear the given grid containing mines without blowing any of them.
 
 ## How to play:
-# Before starting the game, you can choose from 5 different modes:
+### Before starting the game, you can choose from 5 different modes:
 
   - **Easy:** 8x8 grid with 10 mines.  
   - **Medium:** 10x10 grid with 20 mines.  
