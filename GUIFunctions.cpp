@@ -48,7 +48,7 @@ int Gheight = 8;  //Global height of the grid
 int GMinesnum = 10;// Global number of mines
 int flgcntr = 0;
 string gameplay_info = "";
-bool iswon;      // makes sure win function is called once
+bool iswon, finishedCurrentLevel=false;      // makes sure win function is called once
 
 
 //time calc.
@@ -68,7 +68,7 @@ void mainWindowDisplay(float W_width, float W_height, std::string W_name)
 	//Main loop
 	while (window->isOpen())
 	{
-		if (lanched_Level&&!getWin()&&!getClickedONMine())
+		if (lanched_Level && !finishedCurrentLevel)
 		{
 			//side part of level
 			auto clock_end = steady_clock::now();
@@ -101,18 +101,23 @@ void mainWindowDisplay(float W_width, float W_height, std::string W_name)
 									button[i][j]->getRenderer()->setNormalTexture(flag);
 									button[i][j]->getRenderer()->setHoverTexture(flag);
 									endGame(Gheight, Gwidth, GMinesnum);
+									button[i][j]->disconnectAll();
 									flgcntr++;
 								}
 								else if (my_visible[i + 1][j + 1] == '?')
 								{
 									button[i][j]->getRenderer()->setNormalTexture(QMark);
 									button[i][j]->getRenderer()->setHoverTexture(QMark);
+									button[i][j]->disconnectAll();
 									flgcntr--;
 								}
 								else
 								{
 									button[i][j]->getRenderer()->setNormalTexture(tile);
 									button[i][j]->getRenderer()->setHoverTexture(Htile);
+									button[i][j]->connect("pressed", soundPlay, "sound", "sounds/click.flac", false);
+									button[i][j]->connect("pressed", store, i, j, Gwidth, Gheight, 'O');
+									button[i][j]->connect("pressed", endGame, Gheight, Gwidth, GMinesnum);
 								}
 							}
 						}
@@ -153,7 +158,7 @@ void soundPlay(string type, string path, bool isLoop)
 		sound.play();
 		sound.setLoop(isLoop);
 	}
-		
+
 	else if (type == "Music" || type == "music")
 	{
 		if (!music.openFromFile(path))
@@ -237,9 +242,9 @@ void mainMenu()
 	tgui::Texture txts[4];
 	tgui::Texture Htxts[4];
 	string temp = ".png";
-	
+
 	float v = 530;
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		txts[i].load("art/mainmenuitems/m" + std::to_string(i) + temp);
@@ -355,7 +360,7 @@ void levelSelect(int level)
 			inp_height >> height;
 			inp_numOfmines >> numOfmines;
 
-			if (numOfmines < width*height)
+			if (numOfmines < width*height && numOfmines > 0)
 			{
 				disableWidgets();
 				launchLevel(width, height, numOfmines);
@@ -366,7 +371,7 @@ void levelSelect(int level)
 				tgui::MessageBox::Ptr m = theme->load("MessageBox");
 				m->setSize(400, 400);
 				m->setPosition(200, 400);
-				m->setText("Mines must be less than width*height ");
+				m->setText("Mines must be > 0 and < width*height");
 				m->setTextSize(36);
 				gui.add(m);
 			}
@@ -382,14 +387,14 @@ void launchLevel(int width, int height, int numOfmines)
 	randomiseMineCoordinates(minesCoordinates, numOfmines, height, width);
 	placeMines(minesCoordinates);
 	setValuesForGrid(height, width);
-	iswon = false;
+	iswon = false, finishedCurrentLevel = false;
 	flgcntr = 0;
 	clock_begin = steady_clock::now(); //record the start time
 
 	float v = 0;
 	float H = 0;
 	button = new tgui::Button::Ptr*[height];
-	
+
 	for (int i = 0; i < height; i++)
 	{
 		button[i] = new tgui::Button::Ptr[width];
@@ -413,10 +418,10 @@ void launchLevel(int width, int height, int numOfmines)
 			Menu_Widgets.insert(Menu_Widgets.end(), button[i][j]);
 			H += 824 / width;
 		}
-		
+
 		v += 768 / height;
 		H = 0;
-		
+
 	}
 
 	Gwidth = width;
@@ -614,7 +619,8 @@ void finishedLevel(int width, int height, bool won)
 	gui.add(again);
 
 	music.pause();
-	
+	finishedCurrentLevel = true;
+
 	// Disable pressing for the remaining grid tiles
 	for (int i = 0; i < height; i++)
 	{
@@ -636,7 +642,7 @@ void credits()
 	text->setFont("art/arcadeclassic.TTF");
 	text->setText("Developers  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n "
 								 "Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
-				//[Potentially] "Music \n Price of Failure  by  Perturbator \n Zero Gravity  by  Dynatron "
+		//[Potentially]	 "Music \n Price of Failure  by  Perturbator \n Zero Gravity  by  Dynatron "
 	);
 
 	Menu_Widgets.insert(Menu_Widgets.end(), text);
@@ -672,26 +678,10 @@ void nameInput()
 	backButton();
 }
 
-void initScoreBoardGUI()
-{
-	//A Function that write the GUI scoreboard file.
-	int width = 80; //For formatting only
-	ofstream scoreboardO;
-	scoreboardO.open("scoreboardGUI.scrb");
-	for (int i = 0; i < 10; i++)
-	{
-		scoreboardO << topPlayers[i].name <<
-						setw(width - (int)topPlayers[i].name.size()) <<
-						topPlayers[i].milliSeconds / 1000 << endl;
-	}
-	scoreboardO.close();
-}
-
 void showScoreBoard()
 {
 	//A function that prints the scoreboard to the player.
 	readyScoreboard(topPlayers);
-	initScoreBoardGUI();
 
 	// Add label text
 	tgui::Label::Ptr Dtext;
@@ -706,9 +696,6 @@ void showScoreBoard()
 	Menu_Widgets.insert(Menu_Widgets.end(), Dtext);
 	gui.add(Dtext);
 
-	//open scoreboard file
-	ifstream scoreboardI;
-	scoreboardI.open("scoreboardGUI.scrb");
 	float v = 70;
 	for (int i = 0; i < 10; i++)
 	{
@@ -737,7 +724,6 @@ void showScoreBoard()
 
 		v += 60;
 	}
-	scoreboardI.close();
 	backButton();
 }
 
@@ -762,8 +748,8 @@ void name_timeDisplay()
 	gui.add(flg);
 
 	tgui::Picture::Ptr time = tgui::Picture::create(timer);
-	time->setSize(40, 40);
-	time->setPosition(880, 120);
+	time->setSize(50, 25);
+	time->setPosition(877, 123);
 	Menu_Widgets.insert(Menu_Widgets.end(), time);
 	gui.add(time);
 }

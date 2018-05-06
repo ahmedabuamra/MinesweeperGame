@@ -99,33 +99,6 @@ void initVisibleToHash(int height, int width)
 			visible[i][j] = '#';
 }
 
-void chooseDifficulty(char c, int &height, int &width, int &numOfMines)
-{
-	//A function that initialises the grid size and number of mines based on the difficulty
-	//chosen by the player.
-	switch (c)
-	{
-		case 'E':height = 8, width = 8, numOfMines = 10; break; //Easy case
-
-		case 'M':height = 10, width = 10, numOfMines = 20; break; //Medium case
-
-		case 'H':height = 15, width = 15, numOfMines = 45; break; //Hard case
-
-		case 'B':height = 20, width = 20, numOfMines = 80; break; //Brutal case
-
-		case 'C':
-		{
-			cout << "Enter grid size (height * width), and # of mines: ";
-			cin >> height >> width >> numOfMines;
-			break;
-		}  //Custom case
-
-		default: cout << "Error!" << endl;
-	}
-
-
-}
-
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
 										int numOfMines, int height, int width)
 {

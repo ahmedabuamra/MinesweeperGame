@@ -22,6 +22,5 @@ void credits();
 void nameInput();
 void showScoreBoard();
 void name_timeDisplay();
-void initScoreBoardGUI();
 
 #endif //MINESWEEPERGUI_GUIFUNCTIONS_H
