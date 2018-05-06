@@ -39,37 +39,28 @@ using std::chrono::seconds;
 using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 
-
 struct player
 {
-	string name = "GENERIC";
-	long long minutes = genericScoreNum, seconds = genericScoreNum;
-	long long milliSeconds = genericScoreNum;
+	 string name = "GENERIC";
+	 long long seconds = genericScoreNum;
+	 long long milliSeconds = genericScoreNum;
 };
-
-
 //Check the function definitions in the functions.cpp file to see the explanation for what each function does
-
 
 void charline(int x, char c, char spaces);
 
 //Scoreboard functions
 void initialiseVector(vector <player> &topPlayers);
 void readScoreboard(vector <player> &topPlayers);
-void printScoreboard(vector <player> &topPlayers);
 void writeScoreboard(vector <player> &topPlayers);
-void swapStructs(struct player* first, struct player* second);
-bool cmpMilliSc(player a, player b);
+bool compareMilliseconds(player a, player b);
 void sortScoreboard(vector <player> &topPlayers);
-int checkPlayerScore(struct player mainPlayer, vector <player> &topPlayers);
 void readyScoreboard(vector <player> &topPlayers);
 
 //Game functions
 void initVisibleToHash(int height, int width);
-void chooseDifficulty(char c, int &height, int &width, int &numOfMines);
-void initialiseGame(int &height, int &width, int &numOfMines, vector <player> &topPlayers, struct player &mainPlayer);
 void randomiseMineCoordinates(set < pair<int, int> > &minesCoordinates,
-	int numOfMines, int height, int width);
+										int numOfMines, int height, int width);
 void setValueForTile(int r, int c);
 void setValuesForGrid(int height, int width);
 void placeMines(set < pair<int, int> > &minesCoordinates);
@@ -79,10 +70,7 @@ void openTiles(int y, int x, int height, int width);
 void clickTile(int height, int width, int y, int x, char operation);
 void getVisible(char arr[50][50]);
 char endGame(int height, int width, int numOfMines);
-void playGame(int height, int width, int numOfMines, struct player mainPlayer, vector <player> &topPlayers);
 bool getClickedONMine();
 bool getWin();
-
-
 
 #endif //MINESWEEPER_FUNCTIONS_H

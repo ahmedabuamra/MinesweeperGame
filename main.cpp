@@ -11,17 +11,15 @@ https://tgui.eu/									*
 *
 *****************************************************
 */
-
 #include"GUIFunctions.h"
-#include"functions.h"
 
 int main()
 {
-	SoundPlay("music", "sounds/Music.flac", true);
+	soundPlay("music", "sounds/Music.flac", true);
 
 	try
 	{
-		MainMenu();
+		mainMenu();
 	}
 
 	catch (const tgui::Exception& e)
@@ -30,6 +28,7 @@ int main()
 		return 1;
 	}
 
-	MainWindowDisplay(1024, 768, "Minesweeper");
+	mainWindowDisplay(1024, 768, "Minesweeper");
+
 	return 0;
 }
