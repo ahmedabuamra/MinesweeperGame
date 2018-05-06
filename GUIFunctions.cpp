@@ -631,10 +631,12 @@ void credits()
 	tgui::Label::Ptr text;
 	text = tgui::Label::create();
 	text->setSize(windowWidth - 200, windowHeight - 200);
-	text->setTextSize(48);
+	text->setTextSize(46);
 	text->setPosition(windowWidth / 6, 10);
 	text->setFont("art/arcadeclassic.TTF");
-	text->setText("Backend  Development  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n \n GUI   and   Art \n Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
+	text->setText("Developers  \nAhmed Elmayyah\t!Satharus !  \nAhmed Aboamra\t!ahmedabuamra !  \n "
+								 "Andrew Awni\t!andrewawni ! \n AbdulRahman Yousry\t!slashdevo ! \n\n"
+				//[Potentially] "Music \n Price of Failure  by  Perturbator \n Zero Gravity  by  Dynatron "
 	);
 
 	Menu_Widgets.insert(Menu_Widgets.end(), text);
